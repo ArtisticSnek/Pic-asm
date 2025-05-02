@@ -155,7 +155,7 @@ main:
 	movwf BSR
 	
 	clrf ANSELB ;turn off analog for port B
-	bsf WPUD, 5 ;Set weak pull up for RB5
+	bsf WPUB, 5 ;Set weak pull up for RB5
 	
 	
 	

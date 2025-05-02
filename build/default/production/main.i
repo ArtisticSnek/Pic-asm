@@ -7823,30 +7823,25 @@ main:
     setTimer:
  movlw 0Bh
  movwf BSR ;select bank 11
- movlw 10000000B
- movwf T0CON0 ;set up Timer0 Enabled, 8 bit, 1:4
+ bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
  movlw 10000011B
- movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:256
+ movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 
     setPins:
  movlw 00h ;select bank 0
  movwf BSR
 
- movlw 00h ;move 00h to TRISE
- movwf TRISE ;Set Port E to be outputs
+ clrf TRISE ;Set Port E to be outputs
+ clrf PORTB ;reset Port B
 
- movlw 00h
- movwf PORTB
  movlw 0FFh
  movwf TRISB; set port B to be inputs
 
  movlw 3Eh
  movwf BSR
 
- movlw 00h
- movwf ANSELB
- movlw 100000B
- movwf WPUB
+ clrf ANSELB ;turn off analog for port B
+ bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
 
 
 
