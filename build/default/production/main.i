@@ -7743,11 +7743,7 @@ skipz MACRO
 ;
 ; Power-On-Reset entry point
 ;
-    PSECT Por_Vec,global,class=CODE,delta=2
-    global resetVec
-resetVec:
-    PAGESEL Start
-    goto Start
+
 ;
 ; Data space use by interrupt handler to save context
     PSECT Isr_Data,global,class=COMMON,space=1,delta=1,noexec
@@ -7759,7 +7755,7 @@ STATUS_save: DS 1
 PCLATH_save: DS 1
 ;
 ; Interrupt vector and handler
-    PSECT Isr_Vec,global,class=CODE,delta=2;, abs
+    PSECT Isr_Vec,global,class=CODE,delta=2, abs
    GLOBAL IsrVec
 ;
 IsrVec:
@@ -7771,14 +7767,14 @@ IsrVec:
 ;
 IsrHandler:
     movlb 3Eh
-    ;btfsc IOCBF,5 ;skips when the button has not been pressed
-    ;goto clockSpeedChange
+    btfsc IOCBF,5 ;skips when the button has not been pressed
+    goto clockSpeedChange
 
-    ;pastClockSpeedChange:
+    pastClockSpeedChange:
 
     goto IsrExit
 
-    ;clockSpeedChange:
+    clockSpeedChange:
  bcf IOCBF, 5
  movlb 0Bh
  btfsc T0CON1, 2
@@ -7802,13 +7798,18 @@ IsrExit:
 ;
 ; Initialize the PIC hardware
 ;
+
+resetVec:
+    pagesel Start
+    goto Start
+    PSECT Por_Vec,global,class=CODE,delta=2
+    global resetVec
+
 Start:
     ;clrf INTCON ; Disable all interrupt sources
     ;banksel PIE0
     ;clrf PIE1
     ;clrf PIE2
-    movlw 0C1h
-    movwf INTCON ;enable interrupts
 
     movlb 0Eh
     movlw 10h ;set interupt on change enable on
@@ -7816,10 +7817,13 @@ Start:
 
     movlb 3Eh
 
-    movlw 00100000B
-    movwf IOCBP ;set pin interrupt on change
-    movwf IOCBP
-    movwf IOCBN ;for positive and negative
+    bcf IOCBF, 5
+    bsf IOCBP, 5 ;set pin interrupt on change
+    ;bsf IOCBP
+    ;bsf IOCBN ;for positive and negative
+
+    movlw 0C1h
+    movwf INTCON ;enable interrupts
 
     pagesel main
     goto main
@@ -7889,9 +7893,9 @@ AppLoop:
 
     movlb 3Eh
     btfsc IOCBF,5 ;skips when the button has not been pressed
-    goto clockSpeedChange
+    ;goto clockSpeedChange
 
-    pastClockSpeedChange:
+    ;pastClockSpeedChange:
 
     movlb 00h
     btfss LATE, 2 ;if led is off, skip step to turn it off
@@ -7902,7 +7906,7 @@ AppLoop:
 
     goto AppLoop
 
-    clockSpeedChange:
+    ;clockSpeedChange:
  bcf IOCBF, 5
  movlb 0Bh
  btfsc T0CON1, 2
@@ -7911,7 +7915,7 @@ AppLoop:
  movlw 10000111B
 
  movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8
- goto pastClockSpeedChange
+ ;goto pastClockSpeedChange
 
     ledOn:
  movlb 00h
@@ -7930,4 +7934,4 @@ AppLoop:
 ;
 ; Declare Power-On-Reset entry point
 ;
-    END resetVec
+    END Start

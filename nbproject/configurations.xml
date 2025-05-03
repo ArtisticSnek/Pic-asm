@@ -117,6 +117,8 @@
                   value="Press to select which tool pack to use"/>
         <property key="voltagevalue" value=""/>
       </Tool>
+      <item path="ledCountUp.asm" ex="true" overriding="false">
+      </item>
       <nEdbgTool>
         <property key="AutoSelectMemRanges" value="auto"/>
         <property key="Freeze Peripherals" value="true"/>
