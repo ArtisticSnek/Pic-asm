@@ -7722,41 +7722,18 @@ RADIX DEC
 
 
 
-
-; Skip macros
-;
-skipnc MACRO
-    btfsc STATUS,STATUS_C_POSITION
-  ENDM
-
-skipc MACRO
-    btfss STATUS,STATUS_C_POSITION
-  ENDM
-
-skipnz MACRO
-    btfsc STATUS,STATUS_Z_POSITION
-  ENDM
-
-skipz MACRO
-    btfss STATUS,STATUS_Z_POSITION
-  ENDM
-;
-; Power-On-Reset entry point
-;
-
-;
 ; Data space use by interrupt handler to save context
-    PSECT Isr_Data,global,class=COMMON,space=1,delta=1,noexec
+PSECT Isr_Data,global,class=COMMON,space=1,delta=1,noexec
 ;
-    GLOBAL WREG_save,STATUS_save,PCLATH_save
+GLOBAL WREG_save,STATUS_save,PCLATH_save
 ;
 WREG_save: DS 1
 STATUS_save: DS 1
 PCLATH_save: DS 1
 ;
 ; Interrupt vector and handler
-    PSECT Isr_Vec,global,class=CODE,delta=2, abs
-   GLOBAL IsrVec
+PSECT Isr_Vec,global,class=CODE,delta=2;, abs
+GLOBAL IsrVec
 ;
 IsrVec:
     movwf WREG_save ; This context saving and restore may
@@ -7775,18 +7752,16 @@ IsrHandler:
     goto IsrExit
 
     clockSpeedChange:
- bcf IOCBF, 5
+ bcf IOCBF, 5 ;reset interrupt that caused this
  movlb 0Bh
- btfsc T0CON1, 2
+ btfsc T0CON1, 2 ; if the timer is slow now, don't set it slow again
  movlw 10000011B
- btfss T0CON1, 2
+ btfss T0CON1, 2; if the timer is fast now, don't set it fast again
  movlw 10000111B
 
- movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8
+ movwf T0CON1 ;set up Timer0 as LFINTOC, with new speed
  goto pastClockSpeedChange
 
-
-;
 IsrExit:
     movf PCLATH_save,W ; This context saving and restore may
     movwf PCLATH ; not be required for the PIC16F18313
@@ -7795,55 +7770,44 @@ IsrExit:
     swapf WREG_save,F
     swapf WREG_save,W
     retfie ; Return from interrupt
+
+;
+; Power-On-Reset entry point
+;
+PSECT Por_Vec,global,class=CODE,delta=2
+global resetVec
+resetVec:
+    pagesel Start
+    goto Start
+
+
 ;
 ; Initialize the PIC hardware
 ;
 
-resetVec:
-    pagesel Start
-    goto Start
-    PSECT Por_Vec,global,class=CODE,delta=2
-    global resetVec
-
 Start:
-    ;clrf INTCON ; Disable all interrupt sources
-    ;banksel PIE0
-    ;clrf PIE1
-    ;clrf PIE2
-
-    movlb 0Eh
-    movlw 10h ;set interupt on change enable on
-    ;movwf PIE0 ;this needs to be uncommented to enable interrupt
-
-    movlb 3Eh
-
-    bcf IOCBF, 5
-    bsf IOCBP, 5 ;set pin interrupt on change
-    ;bsf IOCBP
-    ;bsf IOCBN ;for positive and negative
-
-    movlw 0C1h
-    movwf INTCON ;enable interrupts
+    clrf INTCON ; Disable all interrupt sources
+    banksel PIE0
+    clrf PIE0
+    clrf PIE1
+    clrf PIE2
 
     pagesel main
     goto main
 ;
 ; Main application data
 ;
-    PSECT MainData,global,class=RAM,space=1,delta=1,noexec
-    global Count
-Count: ds 1
+PSECT MainData,global,class=RAM,space=1,delta=1,noexec
 ;
 ; Main application code
 ;
-    PSECT MainCode,global,class=CODE,delta=2
+PSECT MainCode,global,class=CODE,delta=2
 ;
 ; Initialize the application
 ;
 main:
     setTimer:
  movlb 0Bh
- ;movwf BSR ;select bank 11
  bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
  movlw 10000011B
  movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
@@ -7855,19 +7819,22 @@ main:
 
  movlw 0FFh
  movwf TRISB; set port B to be inputs
-
- ;clrf TRISB
- ;movlw 0FFh
- ;movwf LATB
-
  clrf TRISC
  clrf LATC
 
  movlb 3Eh
  clrf ANSELB ;turn off analog for port B
  bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
+    setInterrputs:
 
+        movlb 0Eh
+ bsf PIE0, 4 ;enable interrupt on change
+ movlb 3Eh
+ bsf IOCBP, 5 ;enable detect for positive edge
+ bsf IOCBN, 5 ;enable detect for negative edge
+ bcf IOCBF, 5 ;clear interrupt flag
 
+ bsf INTCON, 7
 
 
 
@@ -7881,6 +7848,7 @@ AppLoop:
  btfss PIR0, 5; timer0 interupt flag - if set, then has overflowed
  goto timerWait
 
+    movlb 0Eh
     bcf PIR0, 5
     ;btfss PORTB, 5
     ;goto clockSpeedUp
@@ -7891,8 +7859,8 @@ AppLoop:
     movlb 00h
     incf LATC
 
-    movlb 3Eh
-    btfsc IOCBF,5 ;skips when the button has not been pressed
+    ;movlb 3Eh
+    ;btfsc IOCBF,5 ;skips when the button has not been pressed
     ;goto clockSpeedChange
 
     ;pastClockSpeedChange:
@@ -7934,4 +7902,4 @@ AppLoop:
 ;
 ; Declare Power-On-Reset entry point
 ;
-    END Start
+    END resetVec
