@@ -7759,7 +7759,7 @@ STATUS_save: DS 1
 PCLATH_save: DS 1
 ;
 ; Interrupt vector and handler
-    PSECT Isr_Vec,global,class=CODE,delta=2
+    PSECT Isr_Vec,global,class=CODE,delta=2, abs
    GLOBAL IsrVec
 ;
 IsrVec:
@@ -7770,6 +7770,24 @@ IsrVec:
     movwf PCLATH_save
 ;
 IsrHandler:
+    movlb 3Eh
+    btfsc IOCBF,5 ;skips when the button has not been pressed
+    goto clockSpeedChange
+    pastClockSpeedChange:
+
+    goto IsrExit
+
+    clockSpeedChange:
+ movlb 0Bh
+ btfsc T0CON1, 2
+ movlw 10000011B
+ btfss T0CON1, 2
+ movlw 10000111B
+
+ movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8
+ goto pastClockSpeedChange
+
+
 ;
 IsrExit:
     movf PCLATH_save,W ; This context saving and restore may
@@ -7790,14 +7808,11 @@ Start:
     movlw 0C1h
     movwf INTCON ;enable interrupts
 
-    movlw 0Eh
-    movwf BSR
-
+    movlb 0Eh
     movlw 10h ;set interupt on change enable on
-    movlw PIE0
+    movwf PIE0
 
-    movlw 3Eh
-    movwf BSR
+    movlb 3Eh
 
     movlw 00100000B
     movwf IOCBP ;set pin interrupt on change
@@ -7821,25 +7836,25 @@ Count: ds 1
 ;
 main:
     setTimer:
- movlw 0Bh
- movwf BSR ;select bank 11
+ movlb 0Bh
+ ;movwf BSR ;select bank 11
  bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
  movlw 10000011B
  movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 
     setPins:
- movlw 00h ;select bank 0
- movwf BSR
-
+ movlb 00h ;select bank 0
  clrf TRISE ;Set Port E to be outputs
  clrf PORTB ;reset Port B
 
  movlw 0FFh
  movwf TRISB; set port B to be inputs
 
- movlw 3Eh
- movwf BSR
+ ;clrf TRISB
+ ;movlw 0FFh
+ ;movwf LATB
 
+ movlb 3Eh
  clrf ANSELB ;turn off analog for port B
  bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
 
@@ -7848,8 +7863,7 @@ main:
 ; Application process loop
 ;
 AppLoop:
-    movlw 0Eh ;move to the bank with timer interupt flag
-    movwf BSR
+    movlb 0Eh ;move to the bank with timer interupt flag
 
     timerWait:
  btfss PIR0, 5; timer0 interupt flag - if set, then has overflowed
@@ -7857,61 +7871,39 @@ AppLoop:
 
     bcf PIR0, 5
 
-    movlw 00h
-    movwf BSR
+    movlb 00h
 
-    btfss PORTB, 5
-    goto clockSpeedUp
+    ;btfss PORTB, 5
+    ;goto clockSpeedUp
 
-    btfsc PORTB, 5
-    goto clockSpeedDown
+    ;btfsc PORTB, 5
+    ;goto clockSpeedDown
 
     pastButton:
 
-    movlw 00h
-    movwf BSR
-    ;btfsc PORTB, 5
+    movlb 00h
     btfss LATE, 2 ;if led is off, skip step to turn it off
     goto ledOff
 
-    ;btfss PORTB, 5
     btfsc LATE, 2 ;if led is on, skip step to turn it on
     goto ledOn
 
     goto AppLoop
 
     ledOn:
- movlw 00h
- movwf BSR
+ movlb 00h
  bcf LATE, 2
 
- movlw 0Eh ;move to the bank with timer interupt flag
- movwf BSR
+ movlb 0Eh ;move to the bank with timer interupt flag
  goto AppLoop
     ledOff:
- movlw 00h
- movwf BSR
+ movlb 00h
  bsf LATE, 2
 
  movlw 0Eh ;move to the bank with timer interupt flag
  movwf BSR
  goto AppLoop
-    clockSpeedUp:
- movlw 0Bh
- movwf BSR
- btfss T0CON1, 2
- goto pastButton
- movlw 10000011B
- movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8
- goto pastButton
-    clockSpeedDown:
- movlw 0Bh
- movwf BSR
- btfsc T0CON1, 2
- goto pastButton
- movlw 10000111B
- movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:256
- goto pastButton
+
 ;
 ; Declare Power-On-Reset entry point
 ;

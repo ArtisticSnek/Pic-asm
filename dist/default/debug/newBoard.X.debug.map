@@ -6,7 +6,7 @@ Linker command line:
   --edf=C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC16F1xxxx_DFP/1.26.410/xc8\pic\dat\20250122140635_en.msgs \
   -cs -h+dist/default/debug\newBoard.X.debug.sym \
   --cmf=dist/default/debug\newBoard.X.debug.cmf -z -Q16F15276 \
-  -oC:\Users\Ollie\AppData\Local\Temp\xcAsm80.\driver_tmp_3.o \
+  -oC:\Users\Oliver\AppData\Local\Temp\xcAsp10.\driver_tmp_3.o \
   --fixupoverflow=error -ver=XC8 PIC(R) Assembler --fixupoverflow=lstwarn \
   -Mdist/default/debug/newBoard.X.debug.map -E1 -ACODE=00h-07FFhx8 \
   -ASTRCODE=00h-03FFFh -ASTRING=00h-0FFhx64 -ACONST=00h-0FFhx64 \
@@ -56,17 +56,17 @@ Machine type is 16F15276
                 Name                               Link     Load   Length Selector   Space Scale
 build/default/debug/main.o
                 config                             8007     8007        5        0       4
-                MainCode                            7C0      7C0       40      F80       0
+                MainCode                            7D6      7D6       2A      FAC       0
                 MainData                             20       20        1       20       1
-                Isr_Vec                             7A6      7A6       1A      F4C       0
+                Isr_Vec                             7B5      7B5       21      F6A       0
                 Isr_Data                             70       70        3       70       1
-                Por_Vec                             7A4      7A4        2      F48       0
+                Por_Vec                             7B3      7B3        2      F66       0
 
 TOTAL           Name                               Link     Load   Length     Space
         CLASS   CODE           
-                MainCode                            7C0      7C0       40         0
-                Isr_Vec                             7A6      7A6       1A         0
-                Por_Vec                             7A4      7A4        2         0
+                MainCode                            7D6      7D6       2A         0
+                Isr_Vec                             7B5      7B5       21         0
+                Por_Vec                             7B3      7B3        2         0
 
         CLASS   STRCODE        
 
@@ -277,9 +277,9 @@ SEGMENTS        Name                           Load    Length   Top    Selector 
 
                 MainData                       000020  000001  000021        20       1  RAM         1
                 Isr_Data                       000070  000003  000073        70       1  COMMON      1
-                Por_Vec                        0007A4  000002  0007A6       F48       0  CODE        2
-                Isr_Vec                        0007A6  00001A  0007C0       F4C       0  CODE        2
-                MainCode                       0007C0  000040  000800       F80       0  CODE        2
+                Por_Vec                        0007B3  000002  0007B5       F66       0  CODE        2
+                Isr_Vec                        0007B5  000021  0007D6       F6A       0  CODE        2
+                MainCode                       0007D6  00002A  000800       FAC       0  CODE        2
 
 
 UNUSED ADDRESS RANGES
@@ -312,12 +312,12 @@ UNUSED ADDRESS RANGES
         BANK8            00420-0046F              50           1
         BANK9            004A0-004EF              50           1
         BIGRAM           02000-027EF             7F0           1
-        CODE             00000-007A3             7A4           2
+        CODE             00000-007B2             7B3           2
                          00800-03FFF             800
         COMMON           00073-0007F               D           1
-        CONST            00000-007A3             100           2
+        CONST            00000-007B2             100           2
                          00800-03FFF             100
-        ENTRY            00000-007A3             100           2
+        ENTRY            00000-007B2             100           2
                          00800-03FFF             100
         IDLOC            08000-08003               4           2
         RAM              00021-0006F              4F           1
@@ -370,7 +370,7 @@ UNUSED ADDRESS RANGES
         SFR28            00E00-00E6F              70           1
         SFR29            00E80-00EEF              70           1
         SFR3             00180-0019F              20           1
-        SFR30            00F00-00F47              48           1
+        SFR30            00F00-00F65              66           1
         SFR32            01000-0106F              70           1
         SFR33            01080-010EF              70           1
         SFR34            01100-0116F              70           1
@@ -409,14 +409,14 @@ UNUSED ADDRESS RANGES
         SFR7             00380-0039F              20           1
         SFR8             00400-0041F              20           1
         SFR9             00480-0049F              20           1
-        STRCODE          00000-007A3             7A4           2
+        STRCODE          00000-007B2             7B3           2
                          00800-03FFF            3800
-        STRING           00000-007A3             100           2
+        STRING           00000-007B2             100           2
                          00800-03FFF             100
 
                                   Symbol Table
 
-Count           MainData     00020  IsrVec          Isr_Vec      007A6
+Count           MainData     00020  IsrVec          Isr_Vec      007B5
 PCLATH_save     Isr_Data     00072  STATUS_save     Isr_Data     00071
 WREG_save       Isr_Data     00070  __HIsr_Data     Isr_Data     00000
 __HIsr_Vec      Isr_Vec      00000  __HMainCode     MainCode     00000
@@ -459,4 +459,4 @@ __Ludata_bank4  udata_bank4  00000  __Ludata_bank5  udata_bank5  00000
 __Ludata_bank6  udata_bank6  00000  __Ludata_bank7  udata_bank7  00000
 __Ludata_bank8  udata_bank8  00000  __Ludata_bank9  udata_bank9  00000
 __Ludata_shr    udata_shr    00000  __S0            (abs)        00800
-__S1            (abs)        00073  resetVec        Por_Vec      007A4
+__S1            (abs)        00073  resetVec        Por_Vec      007B3
