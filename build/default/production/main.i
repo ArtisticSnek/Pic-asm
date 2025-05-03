@@ -7759,7 +7759,7 @@ STATUS_save: DS 1
 PCLATH_save: DS 1
 ;
 ; Interrupt vector and handler
-    PSECT Isr_Vec,global,class=CODE,delta=2, abs
+    PSECT Isr_Vec,global,class=CODE,delta=2;, abs
    GLOBAL IsrVec
 ;
 IsrVec:
@@ -7771,13 +7771,15 @@ IsrVec:
 ;
 IsrHandler:
     movlb 3Eh
-    btfsc IOCBF,5 ;skips when the button has not been pressed
-    goto clockSpeedChange
-    pastClockSpeedChange:
+    ;btfsc IOCBF,5 ;skips when the button has not been pressed
+    ;goto clockSpeedChange
+
+    ;pastClockSpeedChange:
 
     goto IsrExit
 
-    clockSpeedChange:
+    ;clockSpeedChange:
+ bcf IOCBF, 5
  movlb 0Bh
  btfsc T0CON1, 2
  movlw 10000011B
@@ -7810,7 +7812,7 @@ Start:
 
     movlb 0Eh
     movlw 10h ;set interupt on change enable on
-    movwf PIE0
+    ;movwf PIE0 ;this needs to be uncommented to enable interrupt
 
     movlb 3Eh
 
@@ -7854,9 +7856,15 @@ main:
  ;movlw 0FFh
  ;movwf LATB
 
+ clrf TRISC
+ clrf LATC
+
  movlb 3Eh
  clrf ANSELB ;turn off analog for port B
  bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
+
+
+
 
 
 
@@ -7870,16 +7878,20 @@ AppLoop:
  goto timerWait
 
     bcf PIR0, 5
-
-    movlb 00h
-
     ;btfss PORTB, 5
     ;goto clockSpeedUp
 
     ;btfsc PORTB, 5
     ;goto clockSpeedDown
 
-    pastButton:
+    movlb 00h
+    incf LATC
+
+    movlb 3Eh
+    btfsc IOCBF,5 ;skips when the button has not been pressed
+    goto clockSpeedChange
+
+    pastClockSpeedChange:
 
     movlb 00h
     btfss LATE, 2 ;if led is off, skip step to turn it off
@@ -7889,6 +7901,17 @@ AppLoop:
     goto ledOn
 
     goto AppLoop
+
+    clockSpeedChange:
+ bcf IOCBF, 5
+ movlb 0Bh
+ btfsc T0CON1, 2
+ movlw 10000011B
+ btfss T0CON1, 2
+ movlw 10000111B
+
+ movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8
+ goto pastClockSpeedChange
 
     ledOn:
  movlb 00h

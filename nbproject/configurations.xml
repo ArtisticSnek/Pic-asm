@@ -19,6 +19,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>main.s</itemPath>
+      <itemPath>ledCountUp.asm</itemPath>
     </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
