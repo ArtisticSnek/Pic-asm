@@ -4,6 +4,10 @@ PAGEWIDTH 132
 RADIX DEC
 
 
+;Needs leds all along RCx pins, in order
+
+
+
 ; CONFIG1
   CONFIG  FEXTOSC = OFF         ; External Oscillator Mode Selection bits (Oscillator not enabled)
   CONFIG  RSTOSC = HFINTOSC_32MHZ; Power-up Default Value for COSC bits (HFINTOSC (32 MHz))
