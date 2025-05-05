@@ -7721,12 +7721,6 @@ RADIX DEC
 
 
 
-
-;org 0000h
-;goto resetVec
-;org 0004h
-;goto IsrHandler
-
 ; Interrupt vector and handler
 PSECT Isr_Vec,global,class=CODE,delta=2
 global IsrHandler
@@ -7778,22 +7772,19 @@ Start:
 ; Main application data
 ;
 PSECT MainData,global,class=RAM,space=1,delta=1,noexec
-;
-; Main application code
-;
+;define variables as necessary
 PSECT MainCode,global,class=CODE,delta=2
-;
-; Initialize the application
-;
+
 main:
 
     setPins:
  movlb 00h ;select bank 0
- clrf TRISE ;Set Port E to be outputs
- ;clrf TRISB
+ clrf TRISB
+ clrf PORTE
+ bcf TRISE, 2 ;set ((PORTE) and 07Fh), 2 as output
  clrf TRISC
  clrf PORTB ;reset Port B
- clrf LATB
+ clrf LATC
 
  bsf TRISB, 5
 
@@ -7808,9 +7799,7 @@ main:
  bsf IOCBN, 5 ;enable detect for negative edge
  bcf IOCBF, 5 ;clear interrupt flag
 
-
- bsf INTCON, 7
- ;bsf INTCON, 6
+ bsf INTCON, 7 ;enable global interrupts
 
  movlb 0Eh
  bsf PIE0, 4 ;enable interrupt on change
@@ -7818,8 +7807,55 @@ main:
     setTimer:
  movlb 0Bh
  bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
- movlw 10000011B
+ movlw 83h
  movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
+
+    setPwm:
+ movlb 05h
+
+ bsf TRISB, 0 ;turn the pin output drivers off
+ movlb 06h
+ clrf PWM3CON
+
+ movlb 05h
+ movlw 0FFh
+ movwf T2PR ;timer 2 period
+
+ movlb 06h
+ movlw 08h
+ movwf PWM3DCH
+ movlw 000h
+ movwf PWM3DCL ;set the duty cycle register
+
+ movlb 0Eh
+ bcf PIR1, 6 ;clear Timer2 interupt flag
+
+ movlb 05h
+
+ ;bsf T2HLT, 7 ;Sync to Fosc/4, not sure if this is needed as Fosc/4 is the input
+ bsf T2HLT, 5 ;Sync to timer clock input
+
+ bsf T2CLKCON, 0 ;Clock source - Fosc/4
+
+ movlw 11110000B ;set as on, 1:128 prescalar, no postscalar
+ movwf T2CON
+
+ movlb 06h
+ bsf PWM3CON, 7
+
+ movlb 0Eh
+ waitForPwmTimerOverflow:
+     btfss PIR1, 6
+     goto waitForPwmTimerOverflow
+ bcf PIR1, 6
+ bcf TRISB, 0
+
+ movlb 3Eh
+ movlw 03h
+ movwf RB0PPS
+
+
+
 
 
 
@@ -7835,20 +7871,19 @@ AppLoop:
 
     movlb 0Eh
     bcf PIR0, 5
-    ;btfss PORTB, 5
-    ;goto clockSpeedUp
 
-    ;btfsc PORTB, 5
-    ;goto clockSpeedDown
 
-    movlb 00h
-    incf LATC
+    movlb 06h
+    incf PWM3DCH
 
-    ;movlb 3Eh
-    ;btfsc IOCBF,5 ;skips when the button has not been pressed
-    ;goto clockSpeedChange
+    movf PWM3DCH, w
+    sublw 60h
+    btfsc STATUS, 2
+    goto resetPwmDC
 
-    ;pastClockSpeedChange:
+
+
+
 
     movlb 00h
     btfss LATE, 2 ;if led is off, skip step to turn it off
@@ -7859,6 +7894,9 @@ AppLoop:
 
     goto AppLoop
 
+    resetPwmDC:
+ movlb 06h
+ clrf PWM3DCH
 
     ledOn:
  movlb 00h
