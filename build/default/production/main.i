@@ -7726,12 +7726,40 @@ PSECT Isr_Vec,global,class=CODE,delta=2
 global IsrHandler
 IsrHandler:
     movlb 3Eh
-    btfsc IOCBF,5 ;skips when the button has not been pressed
+    btfsc IOCBF,5 ;Button press interrupt flag
     goto clockSpeedChange
 
     pastClockSpeedChange:
 
+    movlb 0Eh
+    btfsc PIR1, 0 ;Analog interrupt flag
+    goto analogUpdatePWM
+
+    pastAnalogUpdatePWM:
+
     goto IsrExit
+
+    analogUpdatePWM:
+ bcf PIR1, 0 ;clear the flag to start
+ movlb 01h ;move the analog result to the PWM duty cycle - both are 10 bits :p
+ movf ADRESH, w
+ ;clrf ADRESH
+ ;lslf w
+ movlb 06h
+ movwf PWM3DCH
+
+ ;lslf PWM3DCH
+ ;lslf PWM3DCH
+ ;lslf PWM3DCH
+ ;lslf PWM3DCH
+
+ movlb 01h
+ movf ADRESL, w
+ ;clrf ADRESL
+ ;lslf w
+ movlb 06h
+ movwf PWM3DCL
+ goto pastAnalogUpdatePWM
 
     clockSpeedChange:
  bcf IOCBF, 5 ;reset interrupt that caused this
@@ -7817,11 +7845,15 @@ main:
  movlb 06h
  clrf PWM3CON
 
+
  movlb 05h
+
  movlw 0FFh
  movwf T2PR ;timer 2 period
 
+
  movlb 06h
+
  movlw 08h
  movwf PWM3DCH
  movlw 000h
@@ -7853,7 +7885,25 @@ main:
  movlb 3Eh
  movlw 03h
  movwf RB0PPS
+    setAnalogPins:
 
+ bsf TRISC, 2
+ bsf ANSELC, 2
+
+ movlb 01h
+
+ movlw 12h
+ movwf ADCON0 ;select pin ((PORTC) and 07Fh), 2 as analog input
+ bsf ADCON0, 0 ;enable bit. Bit 1 is the "go" bit, used for starting a conversion ;Upon completion, ((PIR1) and 07Fh), 0 bit is set. ADRES stores result
+
+ movlw 0F0h
+ movwf ADCON1 ;set up as using the internal analog conversion clock, and as right justified - that same way as PWM duty cycle
+
+ bsf INTCON, 7 ;enable global interrupts
+ bsf INTCON, 6
+
+ movlb 0Eh
+ bsf PIE1, 0 ;ADC interrupt enable
 
 
 
@@ -7872,14 +7922,15 @@ AppLoop:
     movlb 0Eh
     bcf PIR0, 5
 
+    movlb 01h
+    bsf ADCON0, 1
+    ;movlb 06h
+    ;incf PWM3DCH
 
-    movlb 06h
-    incf PWM3DCH
-
-    movf PWM3DCH, w
-    sublw 40h
-    btfsc STATUS, 2
-    goto resetPwmDC
+    ;movf PWM3DCH, w
+    ;sublw 40h
+    ;btfsc STATUS, 2
+    ;goto resetPwmDC
 
 
 
@@ -7908,8 +7959,7 @@ AppLoop:
  movlb 00h
  bsf LATE, 2
 
- movlw 0Eh ;move to the bank with timer interupt flag
- movwf BSR
+ movlb 0Eh ;move to the bank with timer interupt flag
  goto AppLoop
 
 ;
