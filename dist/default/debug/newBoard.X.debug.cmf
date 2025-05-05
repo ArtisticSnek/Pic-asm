@@ -12,10 +12,9 @@
 # in delta units.  Any other numeric values are decimal.
 %PSECTS
 $build/default/debug/main.o
-Isr_Vec CODE 0 7C6 7C6 F 2 1
-Por_Vec CODE 0 7BF 7BF 7 2 1
-Isr_Data COMMON 1 70 70 3 1 1
-MainCode CODE 0 7D5 7D5 2B 2 1
+Isr_Vec CODE 0 7C9 7C9 D 2 1
+Por_Vec CODE 0 7C0 7C0 9 2 1
+MainCode CODE 0 7D6 7D6 2A 2 1
 config CONFIG 4 8007 8007 5 2 1
 # %UNUSED Section
 # This section enumerates the unused ranges of each CLASS. Each entry
@@ -59,9 +58,9 @@ BANK6 320-36F 1
 BANK7 3A0-3EF 1
 BANK8 420-46F 1
 BANK9 4A0-4EF 1
-CONST 0-7BE 2
+CONST 0-7BF 2
 CONST 800-3FFF 2
-ENTRY 0-7BE 2
+ENTRY 0-7BF 2
 ENTRY 800-3FFF 2
 IDLOC 8000-8003 2
 SFR10 500-51F 1
@@ -117,7 +116,7 @@ SFR60 1E00-1E6F 1
 SFR61 1E80-1EEF 1
 SFR62 1F00-1F6F 1
 SFR63 1F80-1FEF 1
-CODE 0-7BE 2
+CODE 0-7BF 2
 CODE 800-3FFF 2
 SFR0 0-1F 1
 SFR1 80-9F 1
@@ -146,10 +145,10 @@ BANK23 BA0-BEF 1
 BANK24 C20-C6F 1
 BANK25 CA0-CBF 1
 BIGRAM 2000-27EF 1
-COMMON 73-7F 1
-STRCODE 0-7BE 2
+COMMON 70-7F 1
+STRCODE 0-7BF 2
 STRCODE 800-3FFF 2
-STRING 0-7BE 2
+STRING 0-7BF 2
 STRING 800-3FFF 2
 # %LINETAB Section
 # This section enumerates the file/line to address mappings.
@@ -165,71 +164,70 @@ STRING 800-3FFF 2
 # All other numeric values are in decimal.
 %LINETAB
 $build/default/debug/main.o
-7D5 MainCode CODE >126:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7D6 MainCode CODE >127:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7D7 MainCode CODE >128:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7D8 MainCode CODE >129:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7D9 MainCode CODE >132:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7DA MainCode CODE >133:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7DB MainCode CODE >134:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7DC MainCode CODE >136:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7DD MainCode CODE >138:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7DE MainCode CODE >139:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7DF MainCode CODE >140:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7E0 MainCode CODE >141:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7E1 MainCode CODE >143:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7E2 MainCode CODE >144:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7E3 MainCode CODE >145:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7E4 MainCode CODE >149:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7E5 MainCode CODE >150:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7E6 MainCode CODE >151:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7E7 MainCode CODE >152:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7E8 MainCode CODE >154:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7E9 MainCode CODE >156:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7EA MainCode CODE >164:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7EB MainCode CODE >167:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7EC MainCode CODE >168:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7ED MainCode CODE >170:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7EE MainCode CODE >171:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7EF MainCode CODE >178:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7F0 MainCode CODE >179:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7F1 MainCode CODE >187:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7F2 MainCode CODE >188:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7F3 MainCode CODE >189:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7F4 MainCode CODE >191:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7F5 MainCode CODE >192:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7F6 MainCode CODE >194:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7F7 MainCode CODE >198:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7F8 MainCode CODE >199:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7F9 MainCode CODE >201:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7FA MainCode CODE >202:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7FB MainCode CODE >204:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7FC MainCode CODE >205:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7FD MainCode CODE >207:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7FE MainCode CODE >208:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7FF MainCode CODE >209:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7BF Por_Vec CODE >105:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7C0 Por_Vec CODE >106:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7C1 Por_Vec CODE >107:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7C2 Por_Vec CODE >108:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7C3 Por_Vec CODE >109:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7C4 Por_Vec CODE >111:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7C5 Por_Vec CODE >112:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7C6 Isr_Vec CODE >60:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7C7 Isr_Vec CODE >61:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7C8 Isr_Vec CODE >62:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7C9 Isr_Vec CODE >66:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7CA Isr_Vec CODE >69:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7CB Isr_Vec CODE >70:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7CC Isr_Vec CODE >71:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7CD Isr_Vec CODE >72:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7CE Isr_Vec CODE >73:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7CF Isr_Vec CODE >74:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7D0 Isr_Vec CODE >76:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7D1 Isr_Vec CODE >77:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7D2 Isr_Vec CODE >86:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7D3 Isr_Vec CODE >93:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
-7D4 Isr_Vec CODE >94:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+7D6 MainCode CODE >113:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7D7 MainCode CODE >114:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7D8 MainCode CODE >115:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7D9 MainCode CODE >116:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7DA MainCode CODE >119:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7DB MainCode CODE >120:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7DC MainCode CODE >121:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7DD MainCode CODE >122:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7DE MainCode CODE >123:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7DF MainCode CODE >125:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7E0 MainCode CODE >127:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7E1 MainCode CODE >128:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7E2 MainCode CODE >129:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7E3 MainCode CODE >135:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7E4 MainCode CODE >136:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7E5 MainCode CODE >138:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7E6 MainCode CODE >139:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7E7 MainCode CODE >140:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7E8 MainCode CODE >141:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7E9 MainCode CODE >145:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7EA MainCode CODE >153:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7EB MainCode CODE >156:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7EC MainCode CODE >157:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7ED MainCode CODE >159:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7EE MainCode CODE >160:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7EF MainCode CODE >167:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7F0 MainCode CODE >168:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7F1 MainCode CODE >176:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7F2 MainCode CODE >177:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7F3 MainCode CODE >178:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7F4 MainCode CODE >180:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7F5 MainCode CODE >181:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7F6 MainCode CODE >183:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7F7 MainCode CODE >187:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7F8 MainCode CODE >188:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7F9 MainCode CODE >190:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7FA MainCode CODE >191:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7FB MainCode CODE >193:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7FC MainCode CODE >194:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7FD MainCode CODE >196:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7FE MainCode CODE >197:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7FF MainCode CODE >198:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7C0 Por_Vec CODE >85:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7C1 Por_Vec CODE >86:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7C2 Por_Vec CODE >92:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7C3 Por_Vec CODE >93:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7C4 Por_Vec CODE >94:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7C5 Por_Vec CODE >95:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7C6 Por_Vec CODE >96:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7C7 Por_Vec CODE >98:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7C8 Por_Vec CODE >99:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7C9 Isr_Vec CODE >51:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7CA Isr_Vec CODE >52:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7CB Isr_Vec CODE >53:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7CC Isr_Vec CODE >57:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7CD Isr_Vec CODE >60:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7CE Isr_Vec CODE >61:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7CF Isr_Vec CODE >62:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7D0 Isr_Vec CODE >63:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7D1 Isr_Vec CODE >64:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7D2 Isr_Vec CODE >65:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7D3 Isr_Vec CODE >67:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7D4 Isr_Vec CODE >68:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7D5 Isr_Vec CODE >77:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.
@@ -243,7 +241,7 @@ $build/default/debug/main.o
 # is the name of the object file in which the symbol was defined.
 %SYMTAB
 __Hspace_0 800 0 ABS 0 - -
-__Hspace_1 73 0 ABS 0 - -
+__Hspace_1 0 0 ABS 0 - -
 __Hspace_4 10013 0 ABS 0 - -
 __Hudata_bank0 0 0 ABS 0 udata_bank0 -
 __Hudata_bank1 0 0 ABS 0 udata_bank1 -
@@ -257,8 +255,7 @@ __Hudata_bank8 0 0 ABS 0 udata_bank8 -
 __Hudata_bank9 0 0 ABS 0 udata_bank9 -
 __L__absolute__ 0 0 ABS 0 __absolute__ -
 __LIsr_Vec 0 0 ABS 0 Isr_Vec -
-resetVec FA6 0 CODE 0 Isr_Vec build/default/debug/main.o
-PCLATH_save 72 0 COMMON 1 Isr_Data build/default/debug/main.o
+resetVec F80 0 CODE 0 Por_Vec build/default/debug/main.o
 __LPor_Vec 0 0 ABS 0 Por_Vec -
 __Hudata_bank10 0 0 ABS 0 udata_bank10 -
 __Hudata_bank11 0 0 ABS 0 udata_bank11 -
@@ -286,8 +283,7 @@ __Lcode 0 0 ABS 0 code -
 __Ldata 0 0 ABS 0 data -
 __HPor_Vec 0 0 ABS 0 Por_Vec -
 __S0 800 0 ABS 0 - -
-__S1 73 0 ABS 0 - -
-__LIsr_Data 0 0 ABS 0 Isr_Data -
+__S1 0 0 ABS 0 - -
 __Ludata_bank10 0 0 ABS 0 udata_bank10 -
 __Ludata_bank11 0 0 ABS 0 udata_bank11 -
 __Ludata_bank12 0 0 ABS 0 udata_bank12 -
@@ -304,15 +300,13 @@ __Ludata_bank22 0 0 ABS 0 udata_bank22 -
 __Ludata_bank23 0 0 ABS 0 udata_bank23 -
 __Ludata_bank24 0 0 ABS 0 udata_bank24 -
 __Ludata_bank25 0 0 ABS 0 udata_bank25 -
-WREG_save 70 0 COMMON 1 Isr_Data build/default/debug/main.o
 __Lconfig 0 0 CONFIG 4 config -
-__HIsr_Data 0 0 ABS 0 Isr_Data -
 __Lspace_0 0 0 ABS 0 - -
 __Lspace_1 0 0 ABS 0 - -
 __Lspace_4 0 0 ABS 0 - -
 __LMainCode 0 0 ABS 0 MainCode -
 __LMainData 0 0 ABS 0 MainData -
-IsrVec F8C 0 CODE 0 Isr_Vec build/default/debug/main.o
+IsrVec F92 0 CODE 0 Isr_Vec build/default/debug/main.o
 __Ludata_bank0 0 0 ABS 0 udata_bank0 -
 __Ludata_bank1 0 0 ABS 0 udata_bank1 -
 __Ludata_bank2 0 0 ABS 0 udata_bank2 -
@@ -327,7 +321,6 @@ __H__absolute__ 0 0 ABS 0 __absolute__ -
 __HMainCode 0 0 ABS 0 MainCode -
 __HMainData 0 0 ABS 0 MainData -
 __Hudata_shr 0 0 ABS 0 udata_shr -
-STATUS_save 71 0 COMMON 1 Isr_Data build/default/debug/main.o
 __Ludata_shr 0 0 ABS 0 udata_shr -
 # %SPLITSTAB Section
 # This section enumerates all the psect splits performed by the assembler.
@@ -353,10 +346,9 @@ __Ludata_shr 0 0 ABS 0 udata_shr -
 # and size are in units of delta. The file address is in units of bytes.
 # All other numeric quantities are in decimal.
 %SEGMENTS
-Isr_Vec 0 7C6 F8C F 2
-Por_Vec 0 7BF F7E 7 2
-Isr_Data 1 70 70 3 1
-MainCode 0 7D5 FAA 2B 2
+Isr_Vec 0 7C9 F92 D 2
+Por_Vec 0 7C0 F80 9 2
+MainCode 0 7D6 FAC 2A 2
 # %NOTES Section
 # This section contains data of all the note-psects.  The beginning of the section
 # is indicated by %NOTES. The first line indicates the name and decimal

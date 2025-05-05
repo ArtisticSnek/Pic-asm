@@ -36,15 +36,6 @@ RADIX DEC
 #define _XTAL_FREQ 32000000
 
 
-;   Data space use by interrupt handler to save context
-PSECT   Isr_Data,global,class=COMMON,space=1,delta=1,noexec
-;
-GLOBAL  WREG_save,STATUS_save,PCLATH_save
-;
-WREG_save:      DS  1
-STATUS_save:    DS  1
-PCLATH_save:    DS  1
-;
 ;   Interrupt vector and handler
 PSECT   Isr_Vec,global,class=CODE,delta=2;, abs
 GLOBAL  IsrVec
@@ -88,18 +79,14 @@ IsrExit:
 ;
 ; Power-On-Reset entry point
 ;
-
+PSECT   Por_Vec,global,class=CODE,delta=2
+global  resetVec
 resetVec:
     pagesel Start
     goto Start
-    PSECT   Por_Vec,global,class=CODE,delta=2
-    global  resetVec
-    
-    
 ;
 ; Initialize the PIC hardware
-;
-    
+;  
 Start:
 
     clrf    INTCON              ; Disable all interrupt sources
@@ -131,29 +118,31 @@ main:
     setPins:
 	movlb 00h ;select bank 0
 	clrf TRISE ;Set Port E to be outputs
+	clrf TRISB
 	clrf PORTB ;reset Port B
+	clrf LATB
 	
 	bsf TRISB, 5
-	
-	movlw 0FFh
-	movwf TRISB; set port B to be inputs
-	clrf TRISC
-	clrf LATC
 	
 	movlb 3Eh
 	clrf ANSELB ;turn off analog for port B
 	bsf WPUB, 5 ;Set weak pull up for RB5
+	;bcf INLVLB, 5
+	
 	
     setInterrputs:
     
         movlb 0Eh
 	bsf PIE0, 4 ;enable interrupt on change
+	
 	movlb 3Eh
 	bsf IOCBP, 5 ;enable detect for positive edge
-	;bsf IOCBN, 5 ;enable detect for negative edge
-	bsf IOCBF, 5 ;clear interrupt flag
+	bsf IOCBN, 5 ;enable detect for negative edge
+	bcf IOCBF, 5 ;clear interrupt flag
+	
 	
 	;bsf INTCON, 7
+	bsf INTCON, 6
 	
 	
 	

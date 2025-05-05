@@ -7722,25 +7722,16 @@ RADIX DEC
 
 
 
-; Data space use by interrupt handler to save context
-PSECT Isr_Data,global,class=COMMON,space=1,delta=1,noexec
-;
-GLOBAL WREG_save,STATUS_save,PCLATH_save
-;
-WREG_save: DS 1
-STATUS_save: DS 1
-PCLATH_save: DS 1
-;
 ; Interrupt vector and handler
 PSECT Isr_Vec,global,class=CODE,delta=2;, abs
 GLOBAL IsrVec
 ;
 IsrVec:
-    movwf WREG_save ; This context saving and restore may
-    swapf STATUS,W ; not be required for the PIC16F18313
-    movwf STATUS_save ; It's here as an example just in
-    movf PCLATH,W ; case you need it.
-    movwf PCLATH_save
+    ;movwf WREG_save ; This context saving and restore may
+    ;swapf STATUS,W ; not be required for the PIC16F18313
+    ;movwf STATUS_save ; It's here as an example just in
+    ;movf PCLATH,W ; case you need it.
+    ;movwf PCLATH_save
 ;
 IsrHandler:
     movlb 3Eh
@@ -7763,12 +7754,12 @@ IsrHandler:
  goto pastClockSpeedChange
 
 IsrExit:
-    movf PCLATH_save,W ; This context saving and restore may
-    movwf PCLATH ; not be required for the PIC16F18313
-    swapf STATUS_save,W ; It's here as an example just in
-    movwf STATUS ; case you need it.
-    swapf WREG_save,F
-    swapf WREG_save,W
+    ;movf PCLATH_save,W ; This context saving and restore may
+    ;movwf PCLATH ; not be required for the PIC16F18313
+    ;swapf STATUS_save,W ; It's here as an example just in
+    ;movwf STATUS ; case you need it.
+    ;swapf WREG_save,F
+    ;swapf WREG_save,W
     retfie ; Return from interrupt
 
 ;
@@ -7779,13 +7770,11 @@ global resetVec
 resetVec:
     pagesel Start
     goto Start
-
-
 ;
 ; Initialize the PIC hardware
 ;
-
 Start:
+
     clrf INTCON ; Disable all interrupt sources
     banksel PIE0
     clrf PIE0
@@ -7817,6 +7806,8 @@ main:
  clrf TRISE ;Set Port E to be outputs
  clrf PORTB ;reset Port B
 
+ bsf TRISB, 5
+
  movlw 0FFh
  movwf TRISB; set port B to be inputs
  clrf TRISC
@@ -7825,13 +7816,15 @@ main:
  movlb 3Eh
  clrf ANSELB ;turn off analog for port B
  bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
+
     setInterrputs:
 
         movlb 0Eh
  bsf PIE0, 4 ;enable interrupt on change
+
  movlb 3Eh
  bsf IOCBP, 5 ;enable detect for positive edge
- bsf IOCBN, 5 ;enable detect for negative edge
+ ;bsf IOCBN, 5 ;enable detect for negative edge
  bcf IOCBF, 5 ;clear interrupt flag
 
  bsf INTCON, 7
@@ -7874,16 +7867,6 @@ AppLoop:
 
     goto AppLoop
 
-    ;clockSpeedChange:
- bcf IOCBF, 5
- movlb 0Bh
- btfsc T0CON1, 2
- movlw 10000011B
- btfss T0CON1, 2
- movlw 10000111B
-
- movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8
- ;goto pastClockSpeedChange
 
     ledOn:
  movlb 00h
