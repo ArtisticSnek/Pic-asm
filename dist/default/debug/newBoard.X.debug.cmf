@@ -12,9 +12,10 @@
 # in delta units.  Any other numeric values are decimal.
 %PSECTS
 $build/default/debug/main.o
-Isr_Vec CODE 0 7C9 7C9 D 2 1
-Por_Vec CODE 0 7C0 7C0 9 2 1
-MainCode CODE 0 7D6 7D6 2A 2 1
+Isr_Vec CODE 0 4 4 D 2 1
+Por_Vec CODE 0 0 0 2 2 1
+Start_Code CODE 0 3B 3B 7 2 1
+MainCode CODE 0 11 11 2A 2 1
 config CONFIG 4 8007 8007 5 2 1
 # %UNUSED Section
 # This section enumerates the unused ranges of each CLASS. Each entry
@@ -58,10 +59,10 @@ BANK6 320-36F 1
 BANK7 3A0-3EF 1
 BANK8 420-46F 1
 BANK9 4A0-4EF 1
-CONST 0-7BF 2
-CONST 800-3FFF 2
-ENTRY 0-7BF 2
-ENTRY 800-3FFF 2
+CONST 2-3 2
+CONST 42-3FFF 2
+ENTRY 2-3 2
+ENTRY 42-3FFF 2
 IDLOC 8000-8003 2
 SFR10 500-51F 1
 SFR11 580-59F 1
@@ -84,6 +85,7 @@ SFR27 D80-DEF 1
 SFR28 E00-E6F 1
 SFR29 E80-EEF 1
 SFR30 F00-F6F 1
+SFR31 F80-FEF 1
 SFR32 1000-106F 1
 SFR33 1080-10EF 1
 SFR34 1100-116F 1
@@ -116,10 +118,10 @@ SFR60 1E00-1E6F 1
 SFR61 1E80-1EEF 1
 SFR62 1F00-1F6F 1
 SFR63 1F80-1FEF 1
-CODE 0-7BF 2
-CODE 800-3FFF 2
-SFR0 0-1F 1
-SFR1 80-9F 1
+CODE 2-3 2
+CODE 42-3FFF 2
+SFR0 4-7 1
+SFR1 84-9F 1
 SFR2 100-11F 1
 SFR3 180-19F 1
 SFR4 200-21F 1
@@ -146,10 +148,10 @@ BANK24 C20-C6F 1
 BANK25 CA0-CBF 1
 BIGRAM 2000-27EF 1
 COMMON 70-7F 1
-STRCODE 0-7BF 2
-STRCODE 800-3FFF 2
-STRING 0-7BF 2
-STRING 800-3FFF 2
+STRCODE 2-3 2
+STRCODE 42-3FFF 2
+STRING 2-3 2
+STRING 42-3FFF 2
 # %LINETAB Section
 # This section enumerates the file/line to address mappings.
 # The beginning of the section is indicated by %LINETAB.
@@ -164,70 +166,70 @@ STRING 800-3FFF 2
 # All other numeric values are in decimal.
 %LINETAB
 $build/default/debug/main.o
-7D6 MainCode CODE >113:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7D7 MainCode CODE >114:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7D8 MainCode CODE >115:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7D9 MainCode CODE >116:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7DA MainCode CODE >119:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7DB MainCode CODE >120:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7DC MainCode CODE >121:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7DD MainCode CODE >122:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7DE MainCode CODE >123:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7DF MainCode CODE >125:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7E0 MainCode CODE >127:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7E1 MainCode CODE >128:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7E2 MainCode CODE >129:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7E3 MainCode CODE >135:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7E4 MainCode CODE >136:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7E5 MainCode CODE >138:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7E6 MainCode CODE >139:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7E7 MainCode CODE >140:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7E8 MainCode CODE >141:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7E9 MainCode CODE >145:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7EA MainCode CODE >153:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7EB MainCode CODE >156:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7EC MainCode CODE >157:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7ED MainCode CODE >159:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7EE MainCode CODE >160:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7EF MainCode CODE >167:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7F0 MainCode CODE >168:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7F1 MainCode CODE >176:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7F2 MainCode CODE >177:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7F3 MainCode CODE >178:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7F4 MainCode CODE >180:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7F5 MainCode CODE >181:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7F6 MainCode CODE >183:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7F7 MainCode CODE >187:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7F8 MainCode CODE >188:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7F9 MainCode CODE >190:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7FA MainCode CODE >191:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7FB MainCode CODE >193:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7FC MainCode CODE >194:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7FD MainCode CODE >196:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7FE MainCode CODE >197:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7FF MainCode CODE >198:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7C0 Por_Vec CODE >85:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7C1 Por_Vec CODE >86:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7C2 Por_Vec CODE >92:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7C3 Por_Vec CODE >93:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7C4 Por_Vec CODE >94:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7C5 Por_Vec CODE >95:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7C6 Por_Vec CODE >96:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7C7 Por_Vec CODE >98:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7C8 Por_Vec CODE >99:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7C9 Isr_Vec CODE >51:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7CA Isr_Vec CODE >52:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7CB Isr_Vec CODE >53:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7CC Isr_Vec CODE >57:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7CD Isr_Vec CODE >60:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7CE Isr_Vec CODE >61:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7CF Isr_Vec CODE >62:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7D0 Isr_Vec CODE >63:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7D1 Isr_Vec CODE >64:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7D2 Isr_Vec CODE >65:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7D3 Isr_Vec CODE >67:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7D4 Isr_Vec CODE >68:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7D5 Isr_Vec CODE >77:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+11 MainCode CODE >105:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+12 MainCode CODE >106:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+13 MainCode CODE >108:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+14 MainCode CODE >109:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+15 MainCode CODE >110:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+16 MainCode CODE >112:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+17 MainCode CODE >114:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+18 MainCode CODE >115:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+19 MainCode CODE >116:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+1A MainCode CODE >120:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+1B MainCode CODE >121:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+1C MainCode CODE >122:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+1D MainCode CODE >123:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+1E MainCode CODE >126:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+1F MainCode CODE >129:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+20 MainCode CODE >130:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+21 MainCode CODE >133:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+22 MainCode CODE >134:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+23 MainCode CODE >135:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+24 MainCode CODE >136:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+25 MainCode CODE >144:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+26 MainCode CODE >147:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+27 MainCode CODE >148:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+28 MainCode CODE >150:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+29 MainCode CODE >151:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+2A MainCode CODE >158:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+2B MainCode CODE >159:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+2C MainCode CODE >167:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+2D MainCode CODE >168:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+2E MainCode CODE >169:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+2F MainCode CODE >171:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+30 MainCode CODE >172:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+31 MainCode CODE >174:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+32 MainCode CODE >178:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+33 MainCode CODE >179:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+34 MainCode CODE >181:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+35 MainCode CODE >182:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+36 MainCode CODE >184:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+37 MainCode CODE >185:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+38 MainCode CODE >187:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+39 MainCode CODE >188:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+3A MainCode CODE >189:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+3B Start_Code CODE >83:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+3C Start_Code CODE >84:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+3D Start_Code CODE >85:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+3E Start_Code CODE >86:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+3F Start_Code CODE >87:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+40 Start_Code CODE >89:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+41 Start_Code CODE >90:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+0 Por_Vec CODE >75:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+1 Por_Vec CODE >76:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+4 Isr_Vec CODE >48:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+5 Isr_Vec CODE >49:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+6 Isr_Vec CODE >50:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+7 Isr_Vec CODE >54:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+8 Isr_Vec CODE >57:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+9 Isr_Vec CODE >58:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+A Isr_Vec CODE >59:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+B Isr_Vec CODE >60:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+C Isr_Vec CODE >61:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+D Isr_Vec CODE >62:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+E Isr_Vec CODE >64:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+F Isr_Vec CODE >65:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+10 Isr_Vec CODE >67:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.
@@ -240,88 +242,90 @@ $build/default/debug/main.o
 # was defined in a psect then <psect> will be "-". File-name
 # is the name of the object file in which the symbol was defined.
 %SYMTAB
-__Hspace_0 800 0 ABS 0 - -
+__Hspace_0 42 0 ABS 0 - -
 __Hspace_1 0 0 ABS 0 - -
 __Hspace_4 10013 0 ABS 0 - -
-__Hudata_bank0 0 0 ABS 0 udata_bank0 -
-__Hudata_bank1 0 0 ABS 0 udata_bank1 -
-__Hudata_bank2 0 0 ABS 0 udata_bank2 -
-__Hudata_bank3 0 0 ABS 0 udata_bank3 -
-__Hudata_bank4 0 0 ABS 0 udata_bank4 -
-__Hudata_bank5 0 0 ABS 0 udata_bank5 -
-__Hudata_bank6 0 0 ABS 0 udata_bank6 -
-__Hudata_bank7 0 0 ABS 0 udata_bank7 -
-__Hudata_bank8 0 0 ABS 0 udata_bank8 -
-__Hudata_bank9 0 0 ABS 0 udata_bank9 -
+__Hudata_bank0 4 0 ABS 0 udata_bank0 -
+__Hudata_bank1 4 0 ABS 0 udata_bank1 -
+__Hudata_bank2 4 0 ABS 0 udata_bank2 -
+__Hudata_bank3 4 0 ABS 0 udata_bank3 -
+__Hudata_bank4 4 0 ABS 0 udata_bank4 -
+__Hudata_bank5 4 0 ABS 0 udata_bank5 -
+__Hudata_bank6 4 0 ABS 0 udata_bank6 -
+__Hudata_bank7 4 0 ABS 0 udata_bank7 -
+__Hudata_bank8 4 0 ABS 0 udata_bank8 -
+__Hudata_bank9 4 0 ABS 0 udata_bank9 -
 __L__absolute__ 0 0 ABS 0 __absolute__ -
-__LIsr_Vec 0 0 ABS 0 Isr_Vec -
-resetVec F80 0 CODE 0 Por_Vec build/default/debug/main.o
-__LPor_Vec 0 0 ABS 0 Por_Vec -
-__Hudata_bank10 0 0 ABS 0 udata_bank10 -
-__Hudata_bank11 0 0 ABS 0 udata_bank11 -
-__Hudata_bank12 0 0 ABS 0 udata_bank12 -
-__Hudata_bank13 0 0 ABS 0 udata_bank13 -
-__Hudata_bank14 0 0 ABS 0 udata_bank14 -
-__Hudata_bank15 0 0 ABS 0 udata_bank15 -
-__Hudata_bank16 0 0 ABS 0 udata_bank16 -
-__Hudata_bank17 0 0 ABS 0 udata_bank17 -
-__Hudata_bank18 0 0 ABS 0 udata_bank18 -
-__Hudata_bank19 0 0 ABS 0 udata_bank19 -
-__Hudata_bank20 0 0 ABS 0 udata_bank20 -
-__Hudata_bank21 0 0 ABS 0 udata_bank21 -
-__Hudata_bank22 0 0 ABS 0 udata_bank22 -
-__Hudata_bank23 0 0 ABS 0 udata_bank23 -
-__Hudata_bank24 0 0 ABS 0 udata_bank24 -
-__Hudata_bank25 0 0 ABS 0 udata_bank25 -
-__Hudata 0 0 ABS 0 udata -
-__HIsr_Vec 0 0 ABS 0 Isr_Vec -
+__LIsr_Vec 8 0 CODE 0 Isr_Vec -
+resetVec 0 0 CODE 0 Por_Vec build/default/debug/main.o
+__LPor_Vec 0 0 CODE 0 Por_Vec -
+__Hudata_bank10 4 0 ABS 0 udata_bank10 -
+__Hudata_bank11 4 0 ABS 0 udata_bank11 -
+__Hudata_bank12 4 0 ABS 0 udata_bank12 -
+__Hudata_bank13 4 0 ABS 0 udata_bank13 -
+__Hudata_bank14 4 0 ABS 0 udata_bank14 -
+__Hudata_bank15 4 0 ABS 0 udata_bank15 -
+__Hudata_bank16 4 0 ABS 0 udata_bank16 -
+__Hudata_bank17 4 0 ABS 0 udata_bank17 -
+__Hudata_bank18 4 0 ABS 0 udata_bank18 -
+__Hudata_bank19 4 0 ABS 0 udata_bank19 -
+__Hudata_bank20 4 0 ABS 0 udata_bank20 -
+__Hudata_bank21 4 0 ABS 0 udata_bank21 -
+__Hudata_bank22 4 0 ABS 0 udata_bank22 -
+__Hudata_bank23 4 0 ABS 0 udata_bank23 -
+__Hudata_bank24 4 0 ABS 0 udata_bank24 -
+__Hudata_bank25 4 0 ABS 0 udata_bank25 -
+__Hudata 4 0 ABS 0 udata -
+__HIsr_Vec 22 0 CODE 0 Isr_Vec -
 __Hconfig 10018 0 CONFIG 4 config -
-__Ludata 0 0 ABS 0 udata -
-__Hcode 0 0 ABS 0 code -
-__Hdata 0 0 ABS 0 data -
-__Lcode 0 0 ABS 0 code -
-__Ldata 0 0 ABS 0 data -
-__HPor_Vec 0 0 ABS 0 Por_Vec -
-__S0 800 0 ABS 0 - -
+__Ludata 4 0 ABS 0 udata -
+IsrHandler 8 0 CODE 0 Isr_Vec build/default/debug/main.o
+__Hcode 4 0 ABS 0 code -
+__Hdata 4 0 ABS 0 data -
+__Lcode 4 0 ABS 0 code -
+__Ldata 4 0 ABS 0 data -
+__HPor_Vec 4 0 CODE 0 Por_Vec -
+__S0 42 0 ABS 0 - -
 __S1 0 0 ABS 0 - -
-__Ludata_bank10 0 0 ABS 0 udata_bank10 -
-__Ludata_bank11 0 0 ABS 0 udata_bank11 -
-__Ludata_bank12 0 0 ABS 0 udata_bank12 -
-__Ludata_bank13 0 0 ABS 0 udata_bank13 -
-__Ludata_bank14 0 0 ABS 0 udata_bank14 -
-__Ludata_bank15 0 0 ABS 0 udata_bank15 -
-__Ludata_bank16 0 0 ABS 0 udata_bank16 -
-__Ludata_bank17 0 0 ABS 0 udata_bank17 -
-__Ludata_bank18 0 0 ABS 0 udata_bank18 -
-__Ludata_bank19 0 0 ABS 0 udata_bank19 -
-__Ludata_bank20 0 0 ABS 0 udata_bank20 -
-__Ludata_bank21 0 0 ABS 0 udata_bank21 -
-__Ludata_bank22 0 0 ABS 0 udata_bank22 -
-__Ludata_bank23 0 0 ABS 0 udata_bank23 -
-__Ludata_bank24 0 0 ABS 0 udata_bank24 -
-__Ludata_bank25 0 0 ABS 0 udata_bank25 -
+__Ludata_bank10 4 0 ABS 0 udata_bank10 -
+__Ludata_bank11 4 0 ABS 0 udata_bank11 -
+__Ludata_bank12 4 0 ABS 0 udata_bank12 -
+__Ludata_bank13 4 0 ABS 0 udata_bank13 -
+__Ludata_bank14 4 0 ABS 0 udata_bank14 -
+__Ludata_bank15 4 0 ABS 0 udata_bank15 -
+__Ludata_bank16 4 0 ABS 0 udata_bank16 -
+__Ludata_bank17 4 0 ABS 0 udata_bank17 -
+__Ludata_bank18 4 0 ABS 0 udata_bank18 -
+__Ludata_bank19 4 0 ABS 0 udata_bank19 -
+__Ludata_bank20 4 0 ABS 0 udata_bank20 -
+__Ludata_bank21 4 0 ABS 0 udata_bank21 -
+__Ludata_bank22 4 0 ABS 0 udata_bank22 -
+__Ludata_bank23 4 0 ABS 0 udata_bank23 -
+__Ludata_bank24 4 0 ABS 0 udata_bank24 -
+__Ludata_bank25 4 0 ABS 0 udata_bank25 -
+__HStart_Code 4 0 ABS 0 Start_Code -
+__LStart_Code 4 0 ABS 0 Start_Code -
 __Lconfig 0 0 CONFIG 4 config -
 __Lspace_0 0 0 ABS 0 - -
 __Lspace_1 0 0 ABS 0 - -
 __Lspace_4 0 0 ABS 0 - -
-__LMainCode 0 0 ABS 0 MainCode -
-__LMainData 0 0 ABS 0 MainData -
-IsrVec F92 0 CODE 0 Isr_Vec build/default/debug/main.o
-__Ludata_bank0 0 0 ABS 0 udata_bank0 -
-__Ludata_bank1 0 0 ABS 0 udata_bank1 -
-__Ludata_bank2 0 0 ABS 0 udata_bank2 -
-__Ludata_bank3 0 0 ABS 0 udata_bank3 -
-__Ludata_bank4 0 0 ABS 0 udata_bank4 -
-__Ludata_bank5 0 0 ABS 0 udata_bank5 -
-__Ludata_bank6 0 0 ABS 0 udata_bank6 -
-__Ludata_bank7 0 0 ABS 0 udata_bank7 -
-__Ludata_bank8 0 0 ABS 0 udata_bank8 -
-__Ludata_bank9 0 0 ABS 0 udata_bank9 -
+__LMainCode 4 0 ABS 0 MainCode -
+__LMainData 4 0 ABS 0 MainData -
+__Ludata_bank0 4 0 ABS 0 udata_bank0 -
+__Ludata_bank1 4 0 ABS 0 udata_bank1 -
+__Ludata_bank2 4 0 ABS 0 udata_bank2 -
+__Ludata_bank3 4 0 ABS 0 udata_bank3 -
+__Ludata_bank4 4 0 ABS 0 udata_bank4 -
+__Ludata_bank5 4 0 ABS 0 udata_bank5 -
+__Ludata_bank6 4 0 ABS 0 udata_bank6 -
+__Ludata_bank7 4 0 ABS 0 udata_bank7 -
+__Ludata_bank8 4 0 ABS 0 udata_bank8 -
+__Ludata_bank9 4 0 ABS 0 udata_bank9 -
 __H__absolute__ 0 0 ABS 0 __absolute__ -
-__HMainCode 0 0 ABS 0 MainCode -
-__HMainData 0 0 ABS 0 MainData -
-__Hudata_shr 0 0 ABS 0 udata_shr -
-__Ludata_shr 0 0 ABS 0 udata_shr -
+__HMainCode 4 0 ABS 0 MainCode -
+__HMainData 4 0 ABS 0 MainData -
+__Hudata_shr 4 0 ABS 0 udata_shr -
+__Ludata_shr 4 0 ABS 0 udata_shr -
 # %SPLITSTAB Section
 # This section enumerates all the psect splits performed by the assembler.
 # The beginning of the section is indicated by %SPLITSTAB.
@@ -346,9 +350,8 @@ __Ludata_shr 0 0 ABS 0 udata_shr -
 # and size are in units of delta. The file address is in units of bytes.
 # All other numeric quantities are in decimal.
 %SEGMENTS
-Isr_Vec 0 7C9 F92 D 2
-Por_Vec 0 7C0 F80 9 2
-MainCode 0 7D6 FAC 2A 2
+Isr_Vec 0 4 8 3E 2
+Por_Vec 0 0 0 2 2
 # %NOTES Section
 # This section contains data of all the note-psects.  The beginning of the section
 # is indicated by %NOTES. The first line indicates the name and decimal

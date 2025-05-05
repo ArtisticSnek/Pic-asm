@@ -1,34 +1,36 @@
 ### HEXMate logfile and output summary ###
 
 ### Command-line arguments ###
- C:\Users\Oliver\AppData\Local\Temp\xcAstcg.\driver_tmp_3.o
+ C:\Users\Oliver\AppData\Local\Temp\xcAshk4.\driver_tmp_3.o
  -Odist/default/debug\newBoard.X.debug.hex
  -logfile=dist/default/debug\newBoard.X.debug.hxl
  -addressing=2
 
 ### Memory Usage ###
  Input file ranges:
-  F80h - FFFh		(C:\Users\Oliver\AppData\Local\Temp\xcAstcg.\driver_tmp_3.o)
-  1000Eh - 10017h		(C:\Users\Oliver\AppData\Local\Temp\xcAstcg.\driver_tmp_3.o)
+  0h - 3h		(C:\Users\Oliver\AppData\Local\Temp\xcAshk4.\driver_tmp_3.o)
+  8h - 83h		(C:\Users\Oliver\AppData\Local\Temp\xcAshk4.\driver_tmp_3.o)
+  1000Eh - 10017h		(C:\Users\Oliver\AppData\Local\Temp\xcAshk4.\driver_tmp_3.o)
  Unused ranges:
-  0h - F7Fh
-  1000h - 1000Dh
+  4h - 7h
+  84h - 1000Dh
 
 ### Hex Memory Map ###
  Legend:
   -- = Unused memory
-  H1 = Input file             (C:\Users\Oliver\AppData\Local\Temp\xcAstcg.\driver_tmp_3.o)
+  H1 = Input file             (C:\Users\Oliver\AppData\Local\Temp\xcAshk4.\driver_tmp_3.o)
 ----------------------------------------------------------
          | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
 ----------------------------------------------------------
-00000F80 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-00000F90 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-00000FA0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-00000FB0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-00000FC0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-00000FD0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-00000FE0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-00000FF0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000000 | H1 H1 H1 H1 -- -- -- -- H1 H1 H1 H1 H1 H1 H1 H1
+00000010 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000020 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000030 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000040 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000050 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000060 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000070 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000080 | H1 H1 H1 H1 -- -- -- -- -- -- -- -- -- -- -- --
 ----------------------------------------------------------
 00010000 | -- -- -- -- -- -- -- -- -- -- -- -- -- -- H1 H1
 00010010 | H1 H1 H1 H1 H1 H1 H1 H1 -- -- -- -- -- -- -- --

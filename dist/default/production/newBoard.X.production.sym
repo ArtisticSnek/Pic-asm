@@ -1,4 +1,4 @@
-__S0 800 0 ABS 0
+__S0 4000 0 ABS 0
 __S1 0 0 ABS 0
 __Hudata_bank10 0 0 ABS 0
 __Ludata_bank10 0 0 ABS 0
@@ -6,13 +6,8 @@ __Hudata_bank4 0 0 ABS 0
 __Ludata_bank4 0 0 ABS 0
 __Hudata_bank13 0 0 ABS 0
 __Ludata_bank13 0 0 ABS 0
-__HPor_Vec 0 0 ABS 0
-__HIsr_Vec 0 0 ABS 0
-__LPor_Vec 0 0 ABS 0
-__LIsr_Vec 0 0 ABS 0
 __Hconfig 800C 0 CONFIG 4
 __Lconfig 0 0 CONFIG 4
-IsrVec 7C8 0 CODE 0
 __Hudata_bank16 0 0 ABS 0
 __Ludata_bank16 0 0 ABS 0
 __Hudata_bank19 0 0 ABS 0
@@ -27,10 +22,6 @@ __Hdata 0 0 ABS 0
 __Ldata 0 0 ABS 0
 __Hudata_bank23 0 0 ABS 0
 __Ludata_bank23 0 0 ABS 0
-__HMainCode 0 0 ABS 0
-__LMainCode 0 0 ABS 0
-__HMainData 0 0 ABS 0
-__LMainData 0 0 ABS 0
 __Hudata_bank0 0 0 ABS 0
 __Ludata_bank0 0 0 ABS 0
 __Hudata_bank11 0 0 ABS 0
@@ -45,12 +36,11 @@ __Hudata_bank17 0 0 ABS 0
 __Ludata_bank17 0 0 ABS 0
 __H__absolute__ 0 0 ABS 0
 __L__absolute__ 0 0 ABS 0
-resetVec 7BF 0 CODE 0
 __Hudata 0 0 ABS 0
 __Ludata 0 0 ABS 0
 __Hudata_bank1 0 0 ABS 0
 __Ludata_bank1 0 0 ABS 0
-__Hspace_0 800 0 ABS 0
+__Hspace_0 4000 0 ABS 0
 __Lspace_0 0 0 ABS 0
 __Hspace_1 0 0 ABS 0
 __Lspace_1 0 0 ABS 0
@@ -81,74 +71,5 @@ __Ludata_bank9 0 0 ABS 0
 __Hudata_bank25 0 0 ABS 0
 __Ludata_bank25 0 0 ABS 0
 %segments
-MainCode FAA FFF CODE FAA 0
-Isr_Vec F90 FA9 CODE F90 0
-Por_Vec F7E F8F CODE F7E 0
+data 7F76 7FFF STRCODE 7F76 0
 %locals
-build/default/production/main.o
-main.s
-51 7C8 0 CODE 0
-52 7C9 0 CODE 0
-53 7CA 0 CODE 0
-57 7CB 0 CODE 0
-60 7CC 0 CODE 0
-61 7CD 0 CODE 0
-62 7CE 0 CODE 0
-63 7CF 0 CODE 0
-64 7D0 0 CODE 0
-65 7D1 0 CODE 0
-67 7D2 0 CODE 0
-68 7D3 0 CODE 0
-77 7D4 0 CODE 0
-85 7BF 0 CODE 0
-86 7C0 0 CODE 0
-92 7C1 0 CODE 0
-93 7C2 0 CODE 0
-94 7C3 0 CODE 0
-95 7C4 0 CODE 0
-96 7C5 0 CODE 0
-98 7C6 0 CODE 0
-99 7C7 0 CODE 0
-113 7D5 0 CODE 0
-114 7D6 0 CODE 0
-115 7D7 0 CODE 0
-116 7D8 0 CODE 0
-119 7D9 0 CODE 0
-120 7DA 0 CODE 0
-121 7DB 0 CODE 0
-123 7DC 0 CODE 0
-125 7DD 0 CODE 0
-126 7DE 0 CODE 0
-127 7DF 0 CODE 0
-128 7E0 0 CODE 0
-130 7E1 0 CODE 0
-131 7E2 0 CODE 0
-132 7E3 0 CODE 0
-136 7E4 0 CODE 0
-137 7E5 0 CODE 0
-139 7E6 0 CODE 0
-140 7E7 0 CODE 0
-142 7E8 0 CODE 0
-144 7E9 0 CODE 0
-152 7EA 0 CODE 0
-155 7EB 0 CODE 0
-156 7EC 0 CODE 0
-158 7ED 0 CODE 0
-159 7EE 0 CODE 0
-166 7EF 0 CODE 0
-167 7F0 0 CODE 0
-175 7F1 0 CODE 0
-176 7F2 0 CODE 0
-177 7F3 0 CODE 0
-179 7F4 0 CODE 0
-180 7F5 0 CODE 0
-182 7F6 0 CODE 0
-186 7F7 0 CODE 0
-187 7F8 0 CODE 0
-189 7F9 0 CODE 0
-190 7FA 0 CODE 0
-192 7FB 0 CODE 0
-193 7FC 0 CODE 0
-195 7FD 0 CODE 0
-196 7FE 0 CODE 0
-197 7FF 0 CODE 0

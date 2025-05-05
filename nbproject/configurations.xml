@@ -133,7 +133,7 @@
         <property key="communication.speed" value="${communication.speed.default}"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
-        <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
         <property key="event.recorder.debugger.behavior" value="Running"/>
         <property key="event.recorder.enabled" value="false"/>
         <property key="event.recorder.scvd.files" value=""/>
@@ -203,7 +203,7 @@
       <pic-as-linker>
         <property key="linker-callgraph" value="std"/>
         <property key="linker-checksum" value=""/>
-        <property key="linker-custom-options" value=""/>
+        <property key="linker-custom-options" value="-PIsr_Vec=0004h;-PPor_Vec=0000h"/>
         <property key="linker-fill" value=""/>
         <property key="linker-format-hex-file-for-download" value="false"/>
         <property key="linker-libraries" value=""/>

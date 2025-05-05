@@ -7722,9 +7722,14 @@ RADIX DEC
 
 
 
+org 0000h
+goto resetVec
+org 0004h
+goto IsrVec
+
 ; Interrupt vector and handler
-PSECT Isr_Vec,global,class=CODE,delta=2;, abs
-GLOBAL IsrVec
+;PSECT Isr_Vec,global,class=CODE,delta=2;, abs
+;GLOBAL IsrVec
 ;
 IsrVec:
     ;movwf WREG_save ; This context saving and restore may
@@ -7765,8 +7770,8 @@ IsrExit:
 ;
 ; Power-On-Reset entry point
 ;
-PSECT Por_Vec,global,class=CODE,delta=2
-global resetVec
+;PSECT Por_Vec,global,class=CODE,delta=2
+;global resetVec
 resetVec:
     pagesel Start
     goto Start
@@ -7786,11 +7791,11 @@ Start:
 ;
 ; Main application data
 ;
-PSECT MainData,global,class=RAM,space=1,delta=1,noexec
+;PSECT MainData,global,class=RAM,space=1,delta=1,noexec
 ;
 ; Main application code
 ;
-PSECT MainCode,global,class=CODE,delta=2
+;PSECT MainCode,global,class=CODE,delta=2
 ;
 ; Initialize the application
 ;
@@ -7804,18 +7809,17 @@ main:
     setPins:
  movlb 00h ;select bank 0
  clrf TRISE ;Set Port E to be outputs
+ clrf TRISB
  clrf PORTB ;reset Port B
+ clrf LATB
 
  bsf TRISB, 5
-
- movlw 0FFh
- movwf TRISB; set port B to be inputs
- clrf TRISC
- clrf LATC
 
  movlb 3Eh
  clrf ANSELB ;turn off analog for port B
  bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
+ ;bcf INLVLB, 5
+
 
     setInterrputs:
 
@@ -7824,10 +7828,12 @@ main:
 
  movlb 3Eh
  bsf IOCBP, 5 ;enable detect for positive edge
- ;bsf IOCBN, 5 ;enable detect for negative edge
+ bsf IOCBN, 5 ;enable detect for negative edge
  bcf IOCBF, 5 ;clear interrupt flag
 
- bsf INTCON, 7
+
+ ;bsf INTCON, 7
+ bsf INTCON, 6
 
 
 

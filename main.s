@@ -35,18 +35,15 @@ RADIX DEC
 
 #define _XTAL_FREQ 32000000
 
+  
+;org 0000h
+;goto resetVec
+;org 0004h
+;goto IsrHandler
 
 ;   Interrupt vector and handler
-PSECT   Isr_Vec,global,class=CODE,delta=2;, abs
-GLOBAL  IsrVec
-;
-IsrVec:
-    ;movwf   WREG_save       ; This context saving and restore may 
-    ;swapf   STATUS,W        ; not be required for the PIC16F18313
-    ;movwf   STATUS_save     ; It's here as an example just in
-    ;movf    PCLATH,W        ; case you need it.
-    ;movwf   PCLATH_save
-;
+PSECT   Isr_Vec,global,class=CODE,delta=2
+global IsrHandler
 IsrHandler:
     movlb 3Eh
     btfsc IOCBF,5 ;skips when the button has not been pressed
@@ -66,27 +63,21 @@ IsrHandler:
 	
 	movwf T0CON1 ;set up Timer0 as LFINTOC, with new speed
 	goto pastClockSpeedChange
- 
 IsrExit:
-    ;movf    PCLATH_save,W   ; This context saving and restore may
-    ;movwf   PCLATH          ; not be required for the PIC16F18313
-    ;swapf   STATUS_save,W   ; It's here as an example just in
-    ;movwf   STATUS          ; case you need it.
-    ;swapf   WREG_save,F
-    ;swapf   WREG_save,W
     retfie                  ; Return from interrupt
 
 ;
 ; Power-On-Reset entry point
 ;
-PSECT   Por_Vec,global,class=CODE,delta=2
+PSECT   Por_Vec,global,class=CODE,delta=2;, reloc = 0
 global  resetVec
 resetVec:
     pagesel Start
     goto Start
 ;
 ; Initialize the PIC hardware
-;  
+; 
+PSECT Start_Code, global, class = CODE, delta=2
 Start:
 
     clrf    INTCON              ; Disable all interrupt sources
@@ -109,16 +100,12 @@ PSECT   MainCode,global,class=CODE,delta=2
 ; Initialize the application
 ;
 main:
-    setTimer:
-	movlb 0Bh
-	bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
-	movlw 10000011B
-	movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 
     setPins:
 	movlb 00h ;select bank 0
 	clrf TRISE ;Set Port E to be outputs
-	clrf TRISB
+	;clrf TRISB
+	clrf TRISC
 	clrf PORTB ;reset Port B
 	clrf LATB
 	
@@ -127,22 +114,26 @@ main:
 	movlb 3Eh
 	clrf ANSELB ;turn off analog for port B
 	bsf WPUB, 5 ;Set weak pull up for RB5
-	;bcf INLVLB, 5
 	
 	
     setInterrputs:
-    
-        movlb 0Eh
-	bsf PIE0, 4 ;enable interrupt on change
-	
 	movlb 3Eh
 	bsf IOCBP, 5 ;enable detect for positive edge
 	bsf IOCBN, 5 ;enable detect for negative edge
 	bcf IOCBF, 5 ;clear interrupt flag
 	
 	
-	;bsf INTCON, 7
-	bsf INTCON, 6
+	bsf INTCON, 7
+	;bsf INTCON, 6
+	
+	movlb 0Eh
+	bsf PIE0, 4 ;enable interrupt on change
+	
+    setTimer:
+	movlb 0Bh
+	bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
+	movlw 10000011B
+	movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 	
 	
 	
