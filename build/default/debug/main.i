@@ -7729,6 +7729,7 @@ IsrHandler:
     btfsc IOCBF,5 ;skips when the button has not been pressed
     goto clockSpeedChange
     pastClockSpeedChange:
+
     movlb 0Eh
     btfsc PIR1, 0
     goto adcToPwmInterrupt
@@ -7749,22 +7750,22 @@ IsrHandler:
  goto pastClockSpeedChange
     adcToPwmInterrupt:
  movlb 0Eh
- bcf PIR1, 0
- goto pastAdcToPwmInterrupt
+ bcf PIR1, 0 ;clear interrupt flag
+
+ movlb 01h
+ btfsc ADCON0, 1
+ goto $-1 ;Wait for analog conversion to be done - should not reach here unless it is
+
 
  movlb 01h
  movf ADRESL, w
  movlb 06h
- movwf PWM3DCL
+ movwf PWM3DCL ;move the analog result higher bits to pwm duty cycle higher bits
 
  movlb 01h
  movf ADRESH, w
  movlb 06h
- movwf PWM3DCH
-
- movlb 01h
- clrf ADRESL
- clrf ADRESH
+ movwf PWM3DCH ;move the analog result lower bits to pwm duty cycle lower bits
 
  goto pastAdcToPwmInterrupt
 IsrExit:
@@ -7835,9 +7836,9 @@ main:
  movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 
     setPwm:
- movlb 05h
-
+ movlb 00h
  bsf TRISB, 0 ;turn the pin output drivers off
+
  movlb 06h
  clrf PWM3CON
 
@@ -7872,6 +7873,8 @@ main:
      btfss PIR1, 6
      goto waitForPwmTimerOverflow
  bcf PIR1, 6
+
+ movlb 00h
  bcf TRISB, 0
 
  movlb 3Eh
@@ -7880,24 +7883,25 @@ main:
     setAnalogPins:
  movlb 00h
  bsf TRISC, 2
+
+ movlb 3Eh
  bsf ANSELC, 2
 
  movlb 01h
- movlw 01001000B
+ movlw 01001001B
  movwf ADCON0 ;set to ((PORTC) and 07Fh), 2 as input, and as ACD enabled
- clrf ADCON0
+ ;clrf ADCON0
  ;movlw 0Dh
  ;movwf ADACT ;set triggers on read of ADRESH
  clrf ADACT
- bsf ADCON0, 0
+
+ movlw 70h
+ movwf ADCON1
 
  movlb 0Eh
  bsf PIE1, 0 ;analog interrupt enable
  bsf INTCON, 7 ;((INTCON) and 07Fh), 7
  bsf INTCON, 6 ;((INTCON) and 07Fh), 6
-
- movlb 01h
- bsf ADCON0, 1
 
 ; Application process loop
 ;

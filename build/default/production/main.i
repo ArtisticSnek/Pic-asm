@@ -7726,40 +7726,17 @@ PSECT Isr_Vec,global,class=CODE,delta=2
 global IsrHandler
 IsrHandler:
     movlb 3Eh
-    btfsc IOCBF,5 ;Button press interrupt flag
+    btfsc IOCBF,5 ;skips when the button has not been pressed
     goto clockSpeedChange
-
     pastClockSpeedChange:
 
     movlb 0Eh
-    btfsc PIR1, 0 ;Analog interrupt flag
-    goto analogUpdatePWM
+    btfsc PIR1, 0
+    goto adcToPwmInterrupt
 
-    pastAnalogUpdatePWM:
+    pastAdcToPwmInterrupt:
 
     goto IsrExit
-
-    analogUpdatePWM:
- bcf PIR1, 0 ;clear the flag to start
- movlb 01h ;move the analog result to the PWM duty cycle - both are 10 bits :p
- movf ADRESH, w
- ;clrf ADRESH
- ;lslf w
- movlb 06h
- movwf PWM3DCH
-
- ;lslf PWM3DCH
- ;lslf PWM3DCH
- ;lslf PWM3DCH
- ;lslf PWM3DCH
-
- movlb 01h
- movf ADRESL, w
- ;clrf ADRESL
- ;lslf w
- movlb 06h
- movwf PWM3DCL
- goto pastAnalogUpdatePWM
 
     clockSpeedChange:
  bcf IOCBF, 5 ;reset interrupt that caused this
@@ -7771,6 +7748,26 @@ IsrHandler:
 
  movwf T0CON1 ;set up Timer0 as LFINTOC, with new speed
  goto pastClockSpeedChange
+    adcToPwmInterrupt:
+ movlb 0Eh
+ bcf PIR1, 0 ;clear interrupt flag
+
+ movlb 01h
+ btfsc ADCON0, 1
+ goto $-1 ;Wait for analog conversion to be done - should not reach here unless it is
+
+
+ movlb 01h
+ movf ADRESL, w
+ movlb 06h
+ movwf PWM3DCL ;move the analog result higher bits to pwm duty cycle higher bits
+
+ movlb 01h
+ movf ADRESH, w
+ movlb 06h
+ movwf PWM3DCH ;move the analog result lower bits to pwm duty cycle lower bits
+
+ goto pastAdcToPwmInterrupt
 IsrExit:
     retfie ; Return from interrupt
 
@@ -7810,9 +7807,9 @@ main:
  clrf TRISB
  clrf PORTE
  bcf TRISE, 2 ;set ((PORTE) and 07Fh), 2 as output
- clrf TRISC
+ ;clrf TRISC
  clrf PORTB ;reset Port B
- clrf LATC
+ ;clrf LATC
 
  bsf TRISB, 5
 
@@ -7839,22 +7836,18 @@ main:
  movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 
     setPwm:
- movlb 05h
-
+ movlb 00h
  bsf TRISB, 0 ;turn the pin output drivers off
+
  movlb 06h
  clrf PWM3CON
 
-
  movlb 05h
-
  movlw 0FFh
  movwf T2PR ;timer 2 period
 
-
  movlb 06h
-
- movlw 08h
+ movlw 00h
  movwf PWM3DCH
  movlw 000h
  movwf PWM3DCL ;set the duty cycle register
@@ -7880,35 +7873,35 @@ main:
      btfss PIR1, 6
      goto waitForPwmTimerOverflow
  bcf PIR1, 6
+
+ movlb 00h
  bcf TRISB, 0
 
  movlb 3Eh
  movlw 03h
  movwf RB0PPS
     setAnalogPins:
-
+ movlb 00h
  bsf TRISC, 2
+
+ movlb 3Eh
  bsf ANSELC, 2
 
  movlb 01h
+ movlw 01001001B
+ movwf ADCON0 ;set to ((PORTC) and 07Fh), 2 as input, and as ACD enabled
+ ;clrf ADCON0
+ ;movlw 0Dh
+ ;movwf ADACT ;set triggers on read of ADRESH
+ clrf ADACT
 
- movlw 12h
- movwf ADCON0 ;select pin ((PORTC) and 07Fh), 2 as analog input
- bsf ADCON0, 0 ;enable bit. Bit 1 is the "go" bit, used for starting a conversion ;Upon completion, ((PIR1) and 07Fh), 0 bit is set. ADRES stores result
-
- movlw 0F0h
- movwf ADCON1 ;set up as using the internal analog conversion clock, and as right justified - that same way as PWM duty cycle
-
- bsf INTCON, 7 ;enable global interrupts
- bsf INTCON, 6
+ movlw 70h
+ movwf ADCON1
 
  movlb 0Eh
- bsf PIE1, 0 ;ADC interrupt enable
-
-
-
-
-
+ bsf PIE1, 0 ;analog interrupt enable
+ bsf INTCON, 7 ;((INTCON) and 07Fh), 7
+ bsf INTCON, 6 ;((INTCON) and 07Fh), 6
 
 ; Application process loop
 ;
@@ -7924,6 +7917,8 @@ AppLoop:
 
     movlb 01h
     bsf ADCON0, 1
+
+
     ;movlb 06h
     ;incf PWM3DCH
 
@@ -7959,10 +7954,8 @@ AppLoop:
  movlb 00h
  bsf LATE, 2
 
- movlb 0Eh ;move to the bank with timer interupt flag
+ movlw 0Eh ;move to the bank with timer interupt flag
+ movwf BSR
  goto AppLoop
 
-;
-; Declare Power-On-Reset entry point
-;
     END resetVec
