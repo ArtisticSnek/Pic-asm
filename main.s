@@ -40,34 +40,16 @@ PSECT   Isr_Vec,global,class=CODE,delta=2
 global IsrHandler
 IsrHandler:
     movlb 3Eh
-    btfsc IOCBF,5 ;Button press interrupt flag
+    btfsc IOCBF,5 ;skips when the button has not been pressed
     goto clockSpeedChange
-    
     pastClockSpeedChange:
-    
     movlb 0Eh
-    btfsc PIR1, 0 ;Analog interrupt flag
-    goto analogUpdatePWM
+    btfsc PIR1, 0
+    goto adcToPwmInterrupt
     
-    pastAnalogUpdatePWM:
+    pastAdcToPwmInterrupt:
     
     goto IsrExit
-    
-    analogUpdatePWM:
-	bcf PIR1, 0 ;clear the flag to start
-	
-	movlb 01h ;move the analog result to the PWM duty cycle - both are 10 bits :p
-	movf ADRESH, w
-	movlb 06h
-	movwf PWM3DCH
-	
-	movlb 01h
-	movf ADRESL, w
-	
-	movlb 06h
-	movwf PWM3DCL
-    
-	goto pastAnalogUpdatePWM
 	
     clockSpeedChange:
 	bcf IOCBF, 5 ;reset interrupt that caused this
@@ -79,6 +61,26 @@ IsrHandler:
 	
 	movwf T0CON1 ;set up Timer0 as LFINTOC, with new speed
 	goto pastClockSpeedChange
+    adcToPwmInterrupt:
+	movlb 0Eh
+	bcf PIR1, 0
+	goto pastAdcToPwmInterrupt
+	
+	movlb 01h
+	movf ADRESL, w
+	movlb 06h
+	movwf PWM3DCL
+	
+	movlb 01h
+	movf ADRESH, w
+	movlb 06h
+	movwf PWM3DCH
+	
+	movlb 01h
+	clrf ADRESL
+	clrf ADRESH
+	
+	goto pastAdcToPwmInterrupt
 IsrExit:
     retfie                  ; Return from interrupt
 
@@ -118,9 +120,9 @@ main:
 	clrf TRISB
 	clrf PORTE
 	bcf TRISE, 2 ;set RE2 as output 
-	clrf TRISC
+	;clrf TRISC
 	clrf PORTB ;reset Port B
-	clrf LATC
+	;clrf LATC
 	
 	bsf TRISB, 5
 	
@@ -148,29 +150,36 @@ main:
 	
     setPwm:
 	movlb 05h
+	
 	bsf TRISB, 0 ;turn the pin output drivers off
 	movlb 06h
 	clrf PWM3CON
-	
 	
 	movlb 05h
 	movlw 0FFh
 	movwf T2PR ;timer 2 period
 	
-	
 	movlb 06h
-	clrf PWM3DCH
-	clrf PWM3DCL ;set the duty cycle register
+	movlw 00h
+	movwf PWM3DCH
+	movlw 000h
+	movwf PWM3DCL ;set the duty cycle register
 	
 	movlb 0Eh
 	bcf PIR1, 6 ;clear Timer2 interupt flag
 	
 	movlb 05h
-	;bsf T2HLT, 5 ;Sync to timer clock input
+	
+	;bsf T2HLT, 7 ;Sync to Fosc/4, not sure if this is needed as Fosc/4 is the input
+	bsf T2HLT, 5 ;Sync to timer clock input
+	
 	bsf T2CLKCON, 0 ;Clock source - Fosc/4
 	
-	movlw 0F0h ;set as on, 1:128 prescalar, no postscalar
+	movlw 11110000B ;set as on, 1:128 prescalar, no postscalar
 	movwf T2CON
+	
+	movlb 06h
+	bsf PWM3CON, 7
 	
 	movlb 0Eh
 	waitForPwmTimerOverflow:
@@ -182,34 +191,27 @@ main:
 	movlb 3Eh
 	movlw 03h
 	movwf RB0PPS
-	movlb 06h
-	bsf PWM3CON, 7
-	
     setAnalogPins:
 	movlb 00h
-	clrf PORTE
 	bsf TRISC, 2
 	bsf ANSELC, 2
 	
 	movlb 01h
+	movlw 01001000B
+	movwf ADCON0 ;set to RC2 as input, and as ACD enabled
+	clrf ADCON0
+	;movlw 0Dh
+	;movwf ADACT ;set triggers on read of ADRESH
 	clrf ADACT
-	
-	movlw 12h
-	movwf ADCON0 ;select pin RC2 as analog input
-	bsf ADCON0, 0 ;enable bit. Bit 1 is the "go" bit, used for starting a conversion ;Upon completion, ADIF bit is set. ADRES stores result
-	
-	movlw 70h
-	movwf ADCON1 ;set up as using the internal analog conversion clock, and as right justified - that same way as PWM duty cycle
-	
-	bsf INTCON, 7 ;enable global interrupts
-	bsf INTCON, 6
+	bsf ADCON0, 0
 	
 	movlb 0Eh
-	;bsf PIE1, 0 ;ADC interrupt enable
+	bsf PIE1, 0 ;analog interrupt enable
+	bsf INTCON, 7 ;GIE
+	bsf INTCON, 6 ;PEIE
 	
-	;movlb 12h
-	;movlw 0FEh
-	;movwf FVRCON
+	movlb 01h
+	bsf ADCON0, 1
 	
 ; Application process loop
 ;
@@ -226,20 +228,18 @@ AppLoop:
     movlb 01h
     bsf ADCON0, 1
     
-    btfsc ADCON0, 1
-    goto $-1
+    
+    ;movlb 06h
+    ;incf PWM3DCH
+    
+    ;movf PWM3DCH, w
+    ;sublw 40h
+    ;btfsc STATUS, 2
+    ;goto resetPwmDC
     
     
-    movlb 01h ;move the analog result to the PWM duty cycle - both are 10 bits :p
-    movf ADRESH, w
-    movlb 06h
-    movwf PWM3DCH
+    
 
-    movlb 01h
-    movf ADRESL, w
-
-    movlb 06h
-    movwf PWM3DCL
     
     movlb 00h
     btfss LATE, 2 ;if led is off, skip step to turn it off
@@ -264,10 +264,8 @@ AppLoop:
 	movlb 00h
 	bsf LATE, 2
 	
-	movlb 0Eh ;move to the bank with timer interupt flag
+	movlw 0Eh ;move to the bank with timer interupt flag
+	movwf BSR
 	goto AppLoop
     
-;
-; Declare Power-On-Reset entry point
-;
     END     resetVec
