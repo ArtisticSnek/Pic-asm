@@ -7730,12 +7730,6 @@ IsrHandler:
     goto clockSpeedChange
     pastClockSpeedChange:
 
-    movlb 0Eh
-    btfsc PIR1, 0
-    goto adcToPwmInterrupt
-
-    pastAdcToPwmInterrupt:
-
     goto IsrExit
 
     clockSpeedChange:
@@ -7748,26 +7742,6 @@ IsrHandler:
 
  movwf T0CON1 ;set up Timer0 as LFINTOC, with new speed
  goto pastClockSpeedChange
-    adcToPwmInterrupt:
- movlb 0Eh
- bcf PIR1, 0 ;clear interrupt flag
-
- movlb 01h
- btfsc ADCON0, 1
- goto $-1 ;Wait for analog conversion to be done - should not reach here unless it is
-
-
- movlb 01h
- movf ADRESL, w
- movlb 06h
- movwf PWM3DCL ;move the analog result higher bits to pwm duty cycle higher bits
-
- movlb 01h
- movf ADRESH, w
- movlb 06h
- movwf PWM3DCH ;move the analog result lower bits to pwm duty cycle lower bits
-
- goto pastAdcToPwmInterrupt
 IsrExit:
     retfie ; Return from interrupt
 
@@ -7796,26 +7770,87 @@ Start:
 ;
 ; Main application data
 ;
-PSECT MainData,global,class=RAM,space=1,delta=1,noexec
+PSECT udata_shr;,global,class=RAM,space=1,delta=2;,noexec
+;ledZero equ 020h
+;ledOne equ 021h
+;ledTwo equ 022h
+;ledThree equ 023h
+;ledFour equ 024h
+;ledFive equ 025h
+;ledSix equ 026h
+;ledSeven equ 027h
+;ledEight equ 028h
+;ledNine equ 029h
+;ledCounter equ 02Ah
+ledStatesList: db 0DEh, 00Ch, 0D9h, 05Dh, 00Fh, 057h, 0D7h, 01Ch, 0DFh, 05Fh, 020h
+;ledZero: db 0DEh ;define all as a list, then change the point you read in ram?? perhaps
+;ledOne: db 00Ch
+;ledTwo: db 0D9h
+;ledThree: db 05Dh
+;ledFour: db 00Fh
+;ledFive: db 057h
+;ledSix: db 0D7h
+;ledSeven: db 01Ch
+;ledEight: db 0DFh
+;ledNine: db 05Fh
+;ledDot: db 020h
+
+ledCounter: db 00h
 ;define variables as necessary
 PSECT MainCode,global,class=CODE,delta=2
 
+EightSegPins:
+    movlb 00h
+    clrf TRISC
+    clrf LATC
+    return
+
+EightSegDisplay:
+    ;banksel ledZero
+    movlb 00h
+    movlw ledStatesList
+    addwf ledCounter, w;store result in w
+
+
+
+    clrf FSR0L
+    clrf FSR0H
+
+    movwf FSR0L
+    movf BSR, w
+    btfsc BSR, 0
+    bsf FSR0L,7 ;move the location into the indirect file pointer register
+    lsrf WREG
+    movwf FSR0H
+
+    movf INDF0, w
+    movlb 00h
+    movwf LATC
+    banksel ledStatesList
+    incf ledCounter
+    return
+
+
 main:
+    defineVariables:
+ movlb 00h
+ movlw 00h
+ movwf ledCounter
 
     setPins:
  movlb 00h ;select bank 0
- clrf TRISB
  clrf PORTE
- bcf TRISE, 2 ;set ((PORTE) and 07Fh), 2 as output
- ;clrf TRISC
- clrf PORTB ;reset Port B
- ;clrf LATC
+ bcf TRISE, 2 ;set ((PORTE) and 07Fh), 2 as output - board led
 
- bsf TRISB, 5
+ clrf PORTB ;reset Port B
+ clrf TRISB
+ bsf TRISB, 5 ;set ((PORTB) and 07Fh), 5 as input - board button
 
  movlb 3Eh
  clrf ANSELB ;turn off analog for port B
  bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
+
+ call EightSegPins
 
 
     setInterrputs:
@@ -7835,77 +7870,12 @@ main:
  movlw 83h
  movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 
-    setPwm:
- movlb 00h
- bsf TRISB, 0 ;turn the pin output drivers off
-
- movlb 06h
- clrf PWM3CON
-
- movlb 05h
- movlw 0FFh
- movwf T2PR ;timer 2 period
-
- movlb 06h
- movlw 00h
- movwf PWM3DCH
- movlw 000h
- movwf PWM3DCL ;set the duty cycle register
-
- movlb 0Eh
- bcf PIR1, 6 ;clear Timer2 interupt flag
-
- movlb 05h
-
- ;bsf T2HLT, 7 ;Sync to Fosc/4, not sure if this is needed as Fosc/4 is the input
- bsf T2HLT, 5 ;Sync to timer clock input
-
- bsf T2CLKCON, 0 ;Clock source - Fosc/4
-
- movlw 11110000B ;set as on, 1:128 prescalar, no postscalar
- movwf T2CON
-
- movlb 06h
- bsf PWM3CON, 7
-
- movlb 0Eh
- waitForPwmTimerOverflow:
-     btfss PIR1, 6
-     goto waitForPwmTimerOverflow
- bcf PIR1, 6
-
- movlb 00h
- bcf TRISB, 0
-
- movlb 3Eh
- movlw 03h
- movwf RB0PPS
-    setAnalogPins:
- movlb 00h
- bsf TRISC, 2
-
- movlb 3Eh
- bsf ANSELC, 2
-
- movlb 01h
- movlw 01001001B
- movwf ADCON0 ;set to ((PORTC) and 07Fh), 2 as input, and as ACD enabled
- ;clrf ADCON0
- ;movlw 0Dh
- ;movwf ADACT ;set triggers on read of ADRESH
- clrf ADACT
-
- movlw 70h
- movwf ADCON1
-
- movlb 0Eh
- bsf PIE1, 0 ;analog interrupt enable
- bsf INTCON, 7 ;((INTCON) and 07Fh), 7
- bsf INTCON, 6 ;((INTCON) and 07Fh), 6
-
 ; Application process loop
 ;
 AppLoop:
+    movlw PIR0
+
+
     movlb 0Eh ;move to the bank with timer interupt flag
 
     timerWait:
@@ -7915,21 +7885,14 @@ AppLoop:
     movlb 0Eh
     bcf PIR0, 5
 
-    movlb 01h
-    bsf ADCON0, 1
+    movf ledStatesList, w
+
+    movlw ledCounter
 
 
-    ;movlb 06h
-    ;incf PWM3DCH
+    call EightSegDisplay
 
-    ;movf PWM3DCH, w
-    ;sublw 40h
-    ;btfsc STATUS, 2
-    ;goto resetPwmDC
-
-
-
-
+    ;movf ledZero, w
 
     movlb 00h
     btfss LATE, 2 ;if led is off, skip step to turn it off
@@ -7940,22 +7903,15 @@ AppLoop:
 
     goto AppLoop
 
-    resetPwmDC:
- movlb 06h
- clrf PWM3DCH
-
     ledOn:
  movlb 00h
  bcf LATE, 2
-
  movlb 0Eh ;move to the bank with timer interupt flag
  goto AppLoop
     ledOff:
  movlb 00h
  bsf LATE, 2
-
- movlw 0Eh ;move to the bank with timer interupt flag
- movwf BSR
+ movlb 0Eh ;move to the bank with timer interupt flag
  goto AppLoop
 
     END resetVec

@@ -6,7 +6,7 @@ Linker command line:
   --edf=C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC16F1xxxx_DFP/1.26.410/xc8\pic\dat\20250122140635_en.msgs \
   -cs -h+dist/default/production\newBoard.X.production.sym \
   --cmf=dist/default/production\newBoard.X.production.cmf -z -Q16F15276 \
-  -oC:\Users\Oliver\AppData\Local\Temp\xcAsun8.\driver_tmp_3.o \
+  -oC:\Users\Ollie\AppData\Local\Temp\xcAsphk.\driver_tmp_3.o \
   -PIsr_Vec=0004h -PPor_Vec=0000h --fixupoverflow=error \
   -ver=XC8 PIC(R) Assembler --fixupoverflow=lstwarn \
   -Mdist/default/production/newBoard.X.production.map -E1 \
@@ -57,17 +57,18 @@ Machine type is 16F15276
                 Name                               Link     Load   Length Selector   Space Scale
 build/default/production/main.o
                 config                             8007     8007        5        0       4
-                MainCode                             22       22       58        8       0
-                Start_Code                           7A       7A        7        8       0
+                MainCode                             11       11       44        8       0
+                Start_Code                           55       55        7        8       0
                 Por_Vec                               0        0        2        0       0
-                Isr_Vec                               4        4       1E        8       0
+                Isr_Vec                               4        4        D        8       0
+                udata_shr                            70       70        C       70       1
 
 TOTAL           Name                               Link     Load   Length     Space
         CLASS   CODE           
-                MainCode                             22       22       58         0
-                Start_Code                           7A       7A        7         0
+                MainCode                             11       11       44         0
+                Start_Code                           55       55        7         0
                 Por_Vec                               0        0        2         0
-                Isr_Vec                               4        4       1E         0
+                Isr_Vec                               4        4        D         0
 
         CLASS   STRCODE        
 
@@ -78,6 +79,7 @@ TOTAL           Name                               Link     Load   Length     Sp
         CLASS   ENTRY          
 
         CLASS   COMMON         
+                udata_shr                            70       70        C         1
 
         CLASS   BANK0          
 
@@ -275,7 +277,8 @@ TOTAL           Name                               Link     Load   Length     Sp
 SEGMENTS        Name                           Load    Length   Top    Selector   Space  Class     Delta
 
                 Por_Vec                        000000  000002  000002         0       0  CODE        2
-                Isr_Vec                        000004  00007D  000081         8       0  CODE        2
+                Isr_Vec                        000004  000058  00005C         8       0  CODE        2
+                udata_shr                      000070  00000C  00007C        70       1  COMMON      1
 
 
 UNUSED ADDRESS RANGES
@@ -309,12 +312,12 @@ UNUSED ADDRESS RANGES
         BANK9            004A0-004EF              50           1
         BIGRAM           02000-027EF             7F0           1
         CODE             00002-00003               2           2
-                         00081-03FFF             800
-        COMMON           00070-0007F              10           1
+                         0005C-03FFF             800
+        COMMON           0007C-0007F               4           1
         CONST            00002-00003               2           2
-                         00081-03FFF             100
+                         0005C-03FFF             100
         ENTRY            00002-00003               2           2
-                         00081-03FFF             100
+                         0005C-03FFF             100
         IDLOC            08000-08003               4           2
         RAM              00020-0006F              50           1
                          000A0-000EF              50
@@ -353,7 +356,7 @@ UNUSED ADDRESS RANGES
         SFR17            00880-0089F              20           1
         SFR18            00900-0091F              20           1
         SFR19            00980-0099F              20           1
-        SFR2             00102-0011F              1E           1
+        SFR2             00100-0011F              20           1
         SFR20            00A00-00A1F              20           1
         SFR21            00A80-00A9F              20           1
         SFR22            00B00-00B1F              20           1
@@ -406,34 +409,33 @@ UNUSED ADDRESS RANGES
         SFR8             00400-0041F              20           1
         SFR9             00480-0049F              20           1
         STRCODE          00002-00003               2           2
-                         00081-03FFF            3F7F
+                         0005C-03FFF            3FA4
         STRING           00002-00003               2           2
-                         00081-03FFF             100
+                         0005C-03FFF             100
 
                                   Symbol Table
 
-IsrHandler      Isr_Vec      00004  __HIsr_Vec      Isr_Vec      00022
-__HMainCode     MainCode     00004  __HMainData     MainData     00004
-__HPor_Vec      Por_Vec      00002  __HStart_Code   Start_Code   00004
-__H__absolute__ __absolute__ 00000  __Hcode         code         00004
-__Hconfig       config       0800C  __Hdata         data         00004
-__Hspace_0      (abs)        00081  __Hspace_1      (abs)        00000
-__Hspace_4      (abs)        10013  __Hudata        udata        00004
-__Hudata_bank0  udata_bank0  00004  __Hudata_bank1  udata_bank1  00004
-__Hudata_bank10 udata_bank10 00004  __Hudata_bank11 udata_bank11 00004
-__Hudata_bank12 udata_bank12 00004  __Hudata_bank13 udata_bank13 00004
-__Hudata_bank14 udata_bank14 00004  __Hudata_bank15 udata_bank15 00004
-__Hudata_bank16 udata_bank16 00004  __Hudata_bank17 udata_bank17 00004
-__Hudata_bank18 udata_bank18 00004  __Hudata_bank19 udata_bank19 00004
-__Hudata_bank2  udata_bank2  00004  __Hudata_bank20 udata_bank20 00004
-__Hudata_bank21 udata_bank21 00004  __Hudata_bank22 udata_bank22 00004
-__Hudata_bank23 udata_bank23 00004  __Hudata_bank24 udata_bank24 00004
-__Hudata_bank25 udata_bank25 00004  __Hudata_bank3  udata_bank3  00004
-__Hudata_bank4  udata_bank4  00004  __Hudata_bank5  udata_bank5  00004
-__Hudata_bank6  udata_bank6  00004  __Hudata_bank7  udata_bank7  00004
-__Hudata_bank8  udata_bank8  00004  __Hudata_bank9  udata_bank9  00004
-__Hudata_shr    udata_shr    00004  __LIsr_Vec      Isr_Vec      00004
-__LMainCode     MainCode     00004  __LMainData     MainData     00004
+IsrHandler      Isr_Vec      00004  __HIsr_Vec      Isr_Vec      00011
+__HMainCode     MainCode     00004  __HPor_Vec      Por_Vec      00002
+__HStart_Code   Start_Code   00004  __H__absolute__ __absolute__ 00000
+__Hcode         code         00004  __Hconfig       config       0800C
+__Hdata         data         00004  __Hspace_0      (abs)        0005C
+__Hspace_1      (abs)        0007C  __Hspace_4      (abs)        10013
+__Hudata        udata        00004  __Hudata_bank0  udata_bank0  00004
+__Hudata_bank1  udata_bank1  00004  __Hudata_bank10 udata_bank10 00004
+__Hudata_bank11 udata_bank11 00004  __Hudata_bank12 udata_bank12 00004
+__Hudata_bank13 udata_bank13 00004  __Hudata_bank14 udata_bank14 00004
+__Hudata_bank15 udata_bank15 00004  __Hudata_bank16 udata_bank16 00004
+__Hudata_bank17 udata_bank17 00004  __Hudata_bank18 udata_bank18 00004
+__Hudata_bank19 udata_bank19 00004  __Hudata_bank2  udata_bank2  00004
+__Hudata_bank20 udata_bank20 00004  __Hudata_bank21 udata_bank21 00004
+__Hudata_bank22 udata_bank22 00004  __Hudata_bank23 udata_bank23 00004
+__Hudata_bank24 udata_bank24 00004  __Hudata_bank25 udata_bank25 00004
+__Hudata_bank3  udata_bank3  00004  __Hudata_bank4  udata_bank4  00004
+__Hudata_bank5  udata_bank5  00004  __Hudata_bank6  udata_bank6  00004
+__Hudata_bank7  udata_bank7  00004  __Hudata_bank8  udata_bank8  00004
+__Hudata_bank9  udata_bank9  00004  __Hudata_shr    udata_shr    00004
+__LIsr_Vec      Isr_Vec      00004  __LMainCode     MainCode     00004
 __LPor_Vec      Por_Vec      00000  __LStart_Code   Start_Code   00004
 __L__absolute__ __absolute__ 00000  __Lcode         code         00004
 __Lconfig       config       00000  __Ldata         data         00004
@@ -452,5 +454,5 @@ __Ludata_bank25 udata_bank25 00004  __Ludata_bank3  udata_bank3  00004
 __Ludata_bank4  udata_bank4  00004  __Ludata_bank5  udata_bank5  00004
 __Ludata_bank6  udata_bank6  00004  __Ludata_bank7  udata_bank7  00004
 __Ludata_bank8  udata_bank8  00004  __Ludata_bank9  udata_bank9  00004
-__Ludata_shr    udata_shr    00004  __S0            (abs)        00081
-__S1            (abs)        00000  resetVec        Por_Vec      00000
+__Ludata_shr    udata_shr    00004  __S0            (abs)        0005C
+__S1            (abs)        0007C  resetVec        Por_Vec      00000
