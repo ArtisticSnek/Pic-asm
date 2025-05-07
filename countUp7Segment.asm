@@ -3,6 +3,8 @@ PROCESSOR 16F15276
 PAGEWIDTH 132
 RADIX DEC
 
+;Uses port C with RCx ordered 01432567 repectivly going to pin 1245679 10 of the 7 segment display (with dot)
+
 ; CONFIG1
   CONFIG  FEXTOSC = OFF         ; External Oscillator Mode Selection bits (Oscillator not enabled)
   CONFIG  RSTOSC = HFINTOSC_32MHZ; Power-up Default Value for COSC bits (HFINTOSC (32 MHz))

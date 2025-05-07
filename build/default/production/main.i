@@ -7770,19 +7770,9 @@ Start:
 ;
 ; Main application data
 ;
-PSECT udata_shr;,global,class=RAM,space=1,delta=2;,noexec
-;ledZero equ 020h
-;ledOne equ 021h
-;ledTwo equ 022h
-;ledThree equ 023h
-;ledFour equ 024h
-;ledFive equ 025h
-;ledSix equ 026h
-;ledSeven equ 027h
-;ledEight equ 028h
-;ledNine equ 029h
-;ledCounter equ 02Ah
-ledStatesList: db 0DEh, 00Ch, 0D9h, 05Dh, 00Fh, 057h, 0D7h, 01Ch, 0DFh, 05Fh, 020h
+PSECT udata;,global,class=RAM,space=1,delta=2;,noexec
+
+
 ;ledZero: db 0DEh ;define all as a list, then change the point you read in ram?? perhaps
 ;ledOne: db 00Ch
 ;ledTwo: db 0D9h
@@ -7794,8 +7784,8 @@ ledStatesList: db 0DEh, 00Ch, 0D9h, 05Dh, 00Fh, 057h, 0D7h, 01Ch, 0DFh, 05Fh, 02
 ;ledEight: db 0DFh
 ;ledNine: db 05Fh
 ;ledDot: db 020h
-
-ledCounter: db 00h
+;ledStatesList: db 0DEh, 00Ch, 0D9h, 05Dh, 00Fh, 057h, 0D7h, 01Ch, 0DFh, 05Fh, 020h
+;ledCounter: db 00h
 ;define variables as necessary
 PSECT MainCode,global,class=CODE,delta=2
 
@@ -7806,37 +7796,71 @@ EightSegPins:
     return
 
 EightSegDisplay:
-    ;banksel ledZero
     movlb 00h
-    movlw ledStatesList
-    addwf ledCounter, w;store result in w
-
-
+    movlw 020h
+    addwf ledCounter, w
+    ;addwf ledCounter, w;store result in w
 
     clrf FSR0L
     clrf FSR0H
 
     movwf FSR0L
-    movf BSR, w
-    btfsc BSR, 0
-    bsf FSR0L,7 ;move the location into the indirect file pointer register
-    lsrf WREG
-    movwf FSR0H
+    ;movf BSR, w
+    ;btfsc BSR, 0
+    ;bsf FSR0L,7 ;move the location into the indirect file pointer register
+    ;lsrf WREG
 
     movf INDF0, w
-    movlb 00h
     movwf LATC
-    banksel ledStatesList
     incf ledCounter
+
+    movf ledCounter, w
+    sublw 0Ah
+    btfss STATUS, 0
+    clrf ledCounter
     return
 
 
 main:
     defineVariables:
  movlb 00h
+ ledZero equ 020h
+ ledOne equ 021h
+ ledTwo equ 022h
+ ledThree equ 023h
+ ledFour equ 024h
+ ledFive equ 025h
+ ledSix equ 026h
+ ledSeven equ 027h
+ ledEight equ 028h
+ ledNine equ 029h
+ ledDot equ 02Ah
+ ledCounter equ 02Bh
+
+ movlw 0DEh
+ movwf ledZero
+ movlw 00Ch
+ movwf ledOne
+ movlw 0D9h
+ movwf ledTwo
+ movlw 05Dh
+ movwf ledThree
+ movlw 00Fh
+ movwf ledFour
+ movlw 057h
+ movwf ledFive
+ movlw 0D7h
+ movwf ledSix
+ movlw 01Ch
+ movwf ledSeven
+ movlw 0DFh
+ movwf ledEight
+ movlw 05Fh
+ movwf ledNine
+ movlw 020h
+ movwf ledDot
  movlw 00h
  movwf ledCounter
-
     setPins:
  movlb 00h ;select bank 0
  clrf PORTE
@@ -7885,10 +7909,13 @@ AppLoop:
     movlb 0Eh
     bcf PIR0, 5
 
-    movf ledStatesList, w
+    movlb 00h
+    movf 020h, w
 
-    movlw ledCounter
-
+    clrf FSR0H
+    movlw 020h
+    movwf FSR0L
+    movf INDF0, w
 
     call EightSegDisplay
 
