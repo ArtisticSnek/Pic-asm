@@ -114,36 +114,20 @@ ledMatrixToggleColumn:
 	xorwf LATB, f
 	return
     toggleColumnFive:
-	movlb 00h
-	movf LATC, w
-	bcf WREG, 5
-	btfss LATC, 5
-	bsf WREG, 5
-	movwf LATC
+	movlw 20h
+	xorwf LATC, f
 	return
     toggleColumnSix:
-	movlb 00h
-	movf LATB, w
-	bcf WREG, 2
-	btfss LATB, 2
-	bsf WREG, 2
-	movwf LATB
+	movlw 04h
+	xorwf LATB, f
 	return
     toggleColumnSeven:
-	movlb 00h
-	movf LATE, w
-	bcf WREG, 1
-	btfss LATE, 1
-	bsf WREG, 1
-	movwf LATE
+	movlw 02h
+	xorwf LATE, f
 	return
     toggleColumnEight:
-	movlb 00h
-	movf LATA, w
-	bcf WREG, 0
-	btfss LATA, 0
-	bsf WREG, 0
-	movwf LATA
+	movlw 01h
+	xorwf LATA, f
 	return
 	
 ledMatrixToggleRow:
@@ -248,7 +232,6 @@ main:
 	
 ; Application process loop
 ;
-call toggleAllColumn
 call toggleAllRow
     
 movlw 07h
@@ -265,19 +248,19 @@ AppLoop:
     movlb 0Eh	
     bcf PIR0, 5
     
-    movlb 00h
+    movlb 00h;select bank with variable
     movf rowCounter, w
     sublw 08h
-    btfsc STATUS, 2
-    call nextColumn
-    movf rowCounter, w
+    btfsc STATUS, 2 ;if WREG-8=0, end of row has been reached
+    call nextColumn ;handle this accordingly
+    movf rowCounter, w 
     decf WREG
-    btfsc WREG, 7
+    btfsc WREG, 7 ;If subtracting one makes WREG = FF, then it was 0, so previous row is 07
     movlw 07h
-    call ledMatrixToggleRow
-    movf rowCounter, w
-    call ledMatrixToggleRow
-    incf rowCounter
+    call ledMatrixToggleRow ;toggle this previous row
+    movf rowCounter, w 
+    call ledMatrixToggleRow ;toggle the current row
+    incf rowCounter ;increase the counter for next time round
     
     
     
@@ -315,30 +298,36 @@ AppLoop:
 	bsf LATE, 2
 	movlb 0Eh ;move to the bank with timer interupt flag
 	goto AppLoop
+	
     toggleAllColumn: ;set all rows high - no lights on
 	movlb 00h
-	movf rowCounter, w
-	call ledMatrixToggleColumn
+	clrf columnCounter
+	toggleAllColumnLoop:
+	    movf columnCounter, w
+	    call ledMatrixToggleColumn
 
-	movlb 00h
-	incf rowCounter
-	movf rowCounter, w
-	sublw 08h
-	btfss STATUS, 2
-	goto toggleAllColumn
-	clrf rowCounter
+	    movlb 00h
+	    incf columnCounter
+	    movf columnCounter, w
+	    sublw 08h
+	    btfss STATUS, 2
+	    goto toggleAllColumnLoop
+	clrf columnCounter
 	return
+	
     toggleAllRow: ;set all rows high - no lights on
 	movlb 00h
-	movf rowCounter, w
-	call ledMatrixToggleRow
+	clrf rowCounter
+	toggleAllRowLoop:
+	    movf rowCounter, w
+	    call ledMatrixToggleRow
 
-	movlb 00h
-	incf rowCounter
-	movf rowCounter, w
-	sublw 08h
-	btfss STATUS, 2
-	goto toggleAllRow
+	    movlb 00h
+	    incf rowCounter
+	    movf rowCounter, w
+	    sublw 08h
+	    btfss STATUS, 2
+	    goto toggleAllRowLoop
 	clrf rowCounter
 	return
     
