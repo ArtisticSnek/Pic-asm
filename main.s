@@ -98,36 +98,20 @@ ledMatrixToggleColumn:
     goto toggleColumnSeven
     goto toggleColumnEight
     toggleColumnOne:
-	movlb 00h
-	movf LATB, w ;get current state of latch into working register
-	bcf WREG, 4 ;unset bit associated with this column
-	btfss LATB, 4 ;if the bit is currently set on output, don't set it in the working register
-	bsf WREG, 4
-	movwf LATB ;move the working register into the latch - update it
+	movlw 10h
+	xorwf LATB, f
 	return
     toggleColumnTwo:
-	movlb 00h
-	movf LATC, w
-	bcf WREG, 4
-	btfss LATC, 4
-	bsf WREG, 4
-	movwf LATC
+	movlw 10h
+	xorwf LATC, f
 	return
     toggleColumnThree:
-	movlb 00h
-	movf LATC, w
-	bcf WREG, 3
-	btfss LATC, 3
-	bsf WREG, 3
-	movwf LATC
+	movlw 08h
+	xorwf LATC, f
 	return
     toggleColumnFour:
-	movlb 00h
-	movf LATB, w
-	bcf WREG, 1
-	btfss LATB, 1
-	bsf WREG, 1
-	movwf LATB
+	movlw 02h
+	xorwf LATB, f
 	return
     toggleColumnFive:
 	movlb 00h
@@ -163,6 +147,7 @@ ledMatrixToggleColumn:
 	return
 	
 ledMatrixToggleRow:
+    movlb 00h
     addwf PCL, f
     goto toggleRowOne
     goto toggleRowTwo
@@ -173,68 +158,36 @@ ledMatrixToggleRow:
     goto toggleRowSeven
     goto toggleRowEight
     toggleRowOne:
-	movlb 00h
-	movf LATB, w
-	bcf WREG, 0
-	btfss LATB, 0
-	bsf WREG, 0
-	movwf LATB
+	movlw 01h
+	xorwf LATB, f
 	return
     toggleRowTwo:
-	movlb 00h
-	movf LATE, w
-	bcf WREG, 0
-	btfss LATE, 0
-	bsf WREG, 0
-	movwf LATE
+	movlw 01h
+	xorwf LATE, f
 	return
     toggleRowThree:
-	movlb 00h
-	movf LATC, w
-	bcf WREG, 7
-	btfss LATC, 7
-	bsf WREG, 7
-	movwf LATC
+	movlw 80h
+	xorwf LATC, f
 	return
     toggleRowFour:
-	movlb 00h
-	movf LATB, w
-	bcf WREG, 3
-	btfss LATB, 3
-	bsf WREG, 3
-	movwf LATB
+	movlw 08h
+	xorwf LATB, f
 	return
     toggleRowFive:
-	movlb 00h
-	movf LATC, w
-	bcf WREG, 0
-	btfss LATC, 0
-	bsf WREG, 0
-	movwf LATC
+	movlw 01h
+	xorwf LATC, f
 	return
     toggleRowSix:
-	movlb 00h
-	movf LATC, w
-	bcf WREG, 6
-	btfss LATC, 6
-	bsf WREG, 6
-	movwf LATC
+	movlw 40h
+	xorwf LATC, f
 	return
     toggleRowSeven:
-	movlb 00h
-	movf LATC, w
-	bcf WREG, 1
-	btfss LATC, 1
-	bsf WREG, 1
-	movwf LATC
+	movlw 02h
+	xorwf LATC, f
 	return
     toggleRowEight:
-	movlb 00h
-	movf LATC, w
-	bcf WREG, 2
-	btfss LATC, 2
-	bsf WREG, 2
-	movwf LATC
+	movlw 04h
+	xorwf LATC, f
 	return
     
     
@@ -255,8 +208,10 @@ main:
     setVariables:
 	movlb 00h
 	movlw 00h
-	movwf 20h
-	movwf 21h
+	columnCounter equ 20h
+	rowCounter equ 21h
+	movwf columnCounter
+	movwf rowCounter
     setPins:
 	movlb 00h ;select bank 0
 	call ledMatrixPins
@@ -287,11 +242,13 @@ main:
     setTimer:
 	movlb 0Bh
 	bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
+
 	movlw 70h
 	movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 	
 ; Application process loop
 ;
+call toggleAllColumn
 call toggleAllRow
     
 movlw 07h
@@ -309,18 +266,18 @@ AppLoop:
     bcf PIR0, 5
     
     movlb 00h
-    movf 21h, w
+    movf rowCounter, w
     sublw 08h
     btfsc STATUS, 2
     call nextColumn
-    movf 21h, w
+    movf rowCounter, w
     decf WREG
     btfsc WREG, 7
     movlw 07h
     call ledMatrixToggleRow
-    movf 21h, w
+    movf rowCounter, w
     call ledMatrixToggleRow
-    incf 21h
+    incf rowCounter
     
     
     
@@ -333,19 +290,19 @@ AppLoop:
     
     goto    AppLoop 
     nextColumn:
-	clrf 21h
-	movf 20h, w
+	clrf rowCounter
+	movf columnCounter, w
 	decf WREG
 	btfsc WREG, 7
 	movlw 07h
 	call ledMatrixToggleColumn
-	movf 20h, w
+	movf columnCounter, w
 	call ledMatrixToggleColumn
-	incf 20h
-	movf 20h, w
+	incf columnCounter
+	movf columnCounter, w
 	sublw 08h
 	btfsc STATUS, 2
-	clrf 20h
+	clrf columnCounter
 	return
 	
     ledOn:
@@ -360,29 +317,29 @@ AppLoop:
 	goto AppLoop
     toggleAllColumn: ;set all rows high - no lights on
 	movlb 00h
-	movf 21h, w
+	movf rowCounter, w
 	call ledMatrixToggleColumn
 
 	movlb 00h
-	incf 21h
-	movf 21h, w
+	incf rowCounter
+	movf rowCounter, w
 	sublw 08h
 	btfss STATUS, 2
 	goto toggleAllColumn
-	clrf 21h
+	clrf rowCounter
 	return
     toggleAllRow: ;set all rows high - no lights on
 	movlb 00h
-	movf 21h, w
+	movf rowCounter, w
 	call ledMatrixToggleRow
 
 	movlb 00h
-	incf 21h
-	movf 21h, w
+	incf rowCounter
+	movf rowCounter, w
 	sublw 08h
 	btfss STATUS, 2
 	goto toggleAllRow
-	clrf 21h
+	clrf rowCounter
 	return
     
     END     resetVec
