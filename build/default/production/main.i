@@ -7735,11 +7735,10 @@ IsrHandler:
     clockSpeedChange:
  bcf IOCBF, 5 ;reset interrupt that caused this
  movlb 0Bh
- btfsc T0CON1, 2 ; if the timer is slow now, don't set it slow again
- movlw 10000011B
- btfss T0CON1, 2; if the timer is fast now, don't set it fast again
- movlw 10000111B
-
+ btfss T0CON1, 2 ; if the timer is slow now, don't set it slow again
+ movlw 85h;10000011B
+ btfsc T0CON1, 2; if the timer is fast now, don't set it fast again
+ movlw 70h;10000111B
  movwf T0CON1 ;set up Timer0 as LFINTOC, with new speed
  goto pastClockSpeedChange
 IsrExit:
@@ -7772,97 +7771,181 @@ Start:
 ;
 PSECT udata;,global,class=RAM,space=1,delta=2;,noexec
 
-
-;ledZero: db 0DEh ;define all as a list, then change the point you read in ram?? perhaps
-;ledOne: db 00Ch
-;ledTwo: db 0D9h
-;ledThree: db 05Dh
-;ledFour: db 00Fh
-;ledFive: db 057h
-;ledSix: db 0D7h
-;ledSeven: db 01Ch
-;ledEight: db 0DFh
-;ledNine: db 05Fh
-;ledDot: db 020h
-;ledStatesList: db 0DEh, 00Ch, 0D9h, 05Dh, 00Fh, 057h, 0D7h, 01Ch, 0DFh, 05Fh, 020h
-;ledCounter: db 00h
-;define variables as necessary
 PSECT MainCode,global,class=CODE,delta=2
 
-EightSegPins:
-    movlb 00h
+ledMatrixToggleColumn:
+    addwf PCL, f
+    goto toggleColumnOne
+    goto toggleColumnTwo
+    goto toggleColumnThree
+    goto toggleColumnFour
+    goto toggleColumnFive
+    goto toggleColumnSix
+    goto toggleColumnSeven
+    goto toggleColumnEight
+    toggleColumnOne:
+ movlb 00h
+ movf LATB, w ;get current state of latch into working register
+ bcf WREG, 4 ;unset bit associated with this column
+ btfss LATB, 4 ;if the bit is currently set on output, don't set it in the working register
+ bsf WREG, 4
+ movwf LATB ;move the working register into the latch - update it
+ return
+    toggleColumnTwo:
+ movlb 00h
+ movf LATC, w
+ bcf WREG, 4
+ btfss LATC, 4
+ bsf WREG, 4
+ movwf LATC
+ return
+    toggleColumnThree:
+ movlb 00h
+ movf LATC, w
+ bcf WREG, 3
+ btfss LATC, 3
+ bsf WREG, 3
+ movwf LATC
+ return
+    toggleColumnFour:
+ movlb 00h
+ movf LATB, w
+ bcf WREG, 1
+ btfss LATB, 1
+ bsf WREG, 1
+ movwf LATB
+ return
+    toggleColumnFive:
+ movlb 00h
+ movf LATC, w
+ bcf WREG, 5
+ btfss LATC, 5
+ bsf WREG, 5
+ movwf LATC
+ return
+    toggleColumnSix:
+ movlb 00h
+ movf LATB, w
+ bcf WREG, 2
+ btfss LATB, 2
+ bsf WREG, 2
+ movwf LATB
+ return
+    toggleColumnSeven:
+ movlb 00h
+ movf LATE, w
+ bcf WREG, 1
+ btfss LATE, 1
+ bsf WREG, 1
+ movwf LATE
+ return
+    toggleColumnEight:
+ movlb 00h
+ movf LATA, w
+ bcf WREG, 0
+ btfss LATA, 0
+ bsf WREG, 0
+ movwf LATA
+ return
+
+ledMatrixToggleRow:
+    addwf PCL, f
+    goto toggleRowOne
+    goto toggleRowTwo
+    goto toggleRowThree
+    goto toggleRowFour
+    goto toggleRowFive
+    goto toggleRowSix
+    goto toggleRowSeven
+    goto toggleRowEight
+    toggleRowOne:
+ movlb 00h
+ movf LATB, w
+ bcf WREG, 0
+ btfss LATB, 0
+ bsf WREG, 0
+ movwf LATB
+ return
+    toggleRowTwo:
+ movlb 00h
+ movf LATE, w
+ bcf WREG, 0
+ btfss LATE, 0
+ bsf WREG, 0
+ movwf LATE
+ return
+    toggleRowThree:
+ movlb 00h
+ movf LATC, w
+ bcf WREG, 7
+ btfss LATC, 7
+ bsf WREG, 7
+ movwf LATC
+ return
+    toggleRowFour:
+ movlb 00h
+ movf LATB, w
+ bcf WREG, 3
+ btfss LATB, 3
+ bsf WREG, 3
+ movwf LATB
+ return
+    toggleRowFive:
+ movlb 00h
+ movf LATC, w
+ bcf WREG, 0
+ btfss LATC, 0
+ bsf WREG, 0
+ movwf LATC
+ return
+    toggleRowSix:
+ movlb 00h
+ movf LATC, w
+ bcf WREG, 6
+ btfss LATC, 6
+ bsf WREG, 6
+ movwf LATC
+ return
+    toggleRowSeven:
+ movlb 00h
+ movf LATC, w
+ bcf WREG, 1
+ btfss LATC, 1
+ bsf WREG, 1
+ movwf LATC
+ return
+    toggleRowEight:
+ movlb 00h
+ movf LATC, w
+ bcf WREG, 2
+ btfss LATC, 2
+ bsf WREG, 2
+ movwf LATC
+ return
+
+
+
+ledMatrixPins:
+    clrf TRISB
     clrf TRISC
+    clrf TRISE
+    clrf TRISA
+    clrf LATA
+    clrf LATB
     clrf LATC
-    return
-
-EightSegDisplay:
-    movlb 00h
-    movlw 020h
-    addwf ledCounter, w
-    ;addwf ledCounter, w;store result in w
-
-    clrf FSR0L
-    clrf FSR0H
-
-    movwf FSR0L
-    ;movf BSR, w
-    ;btfsc BSR, 0
-    ;bsf FSR0L,7 ;move the location into the indirect file pointer register
-    ;lsrf WREG
-
-    movf INDF0, w
-    movwf LATC
-    incf ledCounter
-
-    movf ledCounter, w
-    sublw 0Ah
-    btfss STATUS, 0
-    clrf ledCounter
+    clrf LATE
     return
 
 
 main:
-    defineVariables:
+    setVariables:
  movlb 00h
- ledZero equ 020h
- ledOne equ 021h
- ledTwo equ 022h
- ledThree equ 023h
- ledFour equ 024h
- ledFive equ 025h
- ledSix equ 026h
- ledSeven equ 027h
- ledEight equ 028h
- ledNine equ 029h
- ledDot equ 02Ah
- ledCounter equ 02Bh
-
- movlw 0DEh
- movwf ledZero
- movlw 00Ch
- movwf ledOne
- movlw 0D9h
- movwf ledTwo
- movlw 05Dh
- movwf ledThree
- movlw 00Fh
- movwf ledFour
- movlw 057h
- movwf ledFive
- movlw 0D7h
- movwf ledSix
- movlw 01Ch
- movwf ledSeven
- movlw 0DFh
- movwf ledEight
- movlw 05Fh
- movwf ledNine
- movlw 020h
- movwf ledDot
  movlw 00h
- movwf ledCounter
+ movwf 20h
+ movwf 21h
     setPins:
  movlb 00h ;select bank 0
+ call ledMatrixPins
  clrf PORTE
  bcf TRISE, 2 ;set ((PORTE) and 07Fh), 2 as output - board led
 
@@ -7874,7 +7957,6 @@ main:
  clrf ANSELB ;turn off analog for port B
  bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
 
- call EightSegPins
 
 
     setInterrputs:
@@ -7891,15 +7973,18 @@ main:
     setTimer:
  movlb 0Bh
  bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
- movlw 83h
+ movlw 70h
  movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 
 ; Application process loop
 ;
+call toggleAllRow
+
+movlw 07h
+call ledMatrixToggleRow
+movlw 07h
+call ledMatrixToggleColumn
 AppLoop:
-    movlw PIR0
-
-
     movlb 0Eh ;move to the bank with timer interupt flag
 
     timerWait:
@@ -7910,16 +7995,20 @@ AppLoop:
     bcf PIR0, 5
 
     movlb 00h
-    movf 020h, w
+    movf 21h, w
+    sublw 08h
+    btfsc STATUS, 2
+    call nextColumn
+    movf 21h, w
+    decf WREG
+    btfsc WREG, 7
+    movlw 07h
+    call ledMatrixToggleRow
+    movf 21h, w
+    call ledMatrixToggleRow
+    incf 21h
 
-    clrf FSR0H
-    movlw 020h
-    movwf FSR0L
-    movf INDF0, w
 
-    call EightSegDisplay
-
-    ;movf ledZero, w
 
     movlb 00h
     btfss LATE, 2 ;if led is off, skip step to turn it off
@@ -7929,6 +8018,21 @@ AppLoop:
     goto ledOn
 
     goto AppLoop
+    nextColumn:
+ clrf 21h
+ movf 20h, w
+ decf WREG
+ btfsc WREG, 7
+ movlw 07h
+ call ledMatrixToggleColumn
+ movf 20h, w
+ call ledMatrixToggleColumn
+ incf 20h
+ movf 20h, w
+ sublw 08h
+ btfsc STATUS, 2
+ clrf 20h
+ return
 
     ledOn:
  movlb 00h
@@ -7940,5 +8044,31 @@ AppLoop:
  bsf LATE, 2
  movlb 0Eh ;move to the bank with timer interupt flag
  goto AppLoop
+    toggleAllColumn: ;set all rows high - no lights on
+ movlb 00h
+ movf 21h, w
+ call ledMatrixToggleColumn
+
+ movlb 00h
+ incf 21h
+ movf 21h, w
+ sublw 08h
+ btfss STATUS, 2
+ goto toggleAllColumn
+ clrf 21h
+ return
+    toggleAllRow: ;set all rows high - no lights on
+ movlb 00h
+ movf 21h, w
+ call ledMatrixToggleRow
+
+ movlb 00h
+ incf 21h
+ movf 21h, w
+ sublw 08h
+ btfss STATUS, 2
+ goto toggleAllRow
+ clrf 21h
+ return
 
     END resetVec

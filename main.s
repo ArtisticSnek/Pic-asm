@@ -49,11 +49,10 @@ IsrHandler:
     clockSpeedChange:
 	bcf IOCBF, 5 ;reset interrupt that caused this
 	movlb 0Bh
-	btfsc T0CON1, 2 ; if the timer is slow now, don't set it slow again
-	movlw 10000011B
-	btfss T0CON1, 2; if the timer is fast now, don't set it fast again
-	movlw 10000111B
-	
+	btfss T0CON1, 2 ; if the timer is slow now, don't set it slow again
+	movlw 85h;10000011B
+	btfsc T0CON1, 2; if the timer is fast now, don't set it fast again
+	movlw 70h;10000111B
 	movwf T0CON1 ;set up Timer0 as LFINTOC, with new speed
 	goto pastClockSpeedChange
 IsrExit:
@@ -87,25 +86,26 @@ Start:
 PSECT   udata;,global,class=RAM,space=1,delta=2;,noexec
 
 PSECT   MainCode,global,class=CODE,delta=2
+
 ledMatrixToggleColumn:
     addwf PCL, f
-    goto toggleOne
-    goto toggleTwo
-    goto toggleThree
-    goto toggleFour
-    goto toggleFive
-    goto toggleSix
-    goto toggleSeven
-    goto toggleEight
-    toggleOne:
+    goto toggleColumnOne
+    goto toggleColumnTwo
+    goto toggleColumnThree
+    goto toggleColumnFour
+    goto toggleColumnFive
+    goto toggleColumnSix
+    goto toggleColumnSeven
+    goto toggleColumnEight
+    toggleColumnOne:
 	movlb 00h
-	movf LATB, w
-	bcf WREG, 4
-	btfss LATB, 4
+	movf LATB, w ;get current state of latch into working register
+	bcf WREG, 4 ;unset bit associated with this column
+	btfss LATB, 4 ;if the bit is currently set on output, don't set it in the working register
 	bsf WREG, 4
-	movwf LATB
+	movwf LATB ;move the working register into the latch - update it
 	return
-    toggleTwo:
+    toggleColumnTwo:
 	movlb 00h
 	movf LATC, w
 	bcf WREG, 4
@@ -113,7 +113,7 @@ ledMatrixToggleColumn:
 	bsf WREG, 4
 	movwf LATC
 	return
-    toggleThree:
+    toggleColumnThree:
 	movlb 00h
 	movf LATC, w
 	bcf WREG, 3
@@ -121,7 +121,7 @@ ledMatrixToggleColumn:
 	bsf WREG, 3
 	movwf LATC
 	return
-    toggleFour:
+    toggleColumnFour:
 	movlb 00h
 	movf LATB, w
 	bcf WREG, 1
@@ -129,33 +129,112 @@ ledMatrixToggleColumn:
 	bsf WREG, 1
 	movwf LATB
 	return
-    toggleFive:
+    toggleColumnFive:
 	movlb 00h
+	movf LATC, w
+	bcf WREG, 5
 	btfss LATC, 5
-	bsf LATC,5
-	btfsc LATC, 5
-	bcf LATC, 5
+	bsf WREG, 5
+	movwf LATC
 	return
-    toggleSix:
+    toggleColumnSix:
 	movlb 00h
+	movf LATB, w
+	bcf WREG, 2
 	btfss LATB, 2
-	bsf LATB,2
-	btfsc LATB, 2
-	bcf LATB, 2
+	bsf WREG, 2
+	movwf LATB
 	return
-    toggleSeven:
+    toggleColumnSeven:
 	movlb 00h
+	movf LATE, w
+	bcf WREG, 1
 	btfss LATE, 1
-	bsf LATE,2
-	btfsc LATE, 1
-	bcf LATE, 1
+	bsf WREG, 1
+	movwf LATE
 	return
-    toggleEight:
+    toggleColumnEight:
 	movlb 00h
+	movf LATA, w
+	bcf WREG, 0
 	btfss LATA, 0
-	bsf LATA,0
-	btfsc LATA, 0
-	bcf LATA, 0
+	bsf WREG, 0
+	movwf LATA
+	return
+	
+ledMatrixToggleRow:
+    addwf PCL, f
+    goto toggleRowOne
+    goto toggleRowTwo
+    goto toggleRowThree
+    goto toggleRowFour
+    goto toggleRowFive
+    goto toggleRowSix
+    goto toggleRowSeven
+    goto toggleRowEight
+    toggleRowOne:
+	movlb 00h
+	movf LATB, w
+	bcf WREG, 0
+	btfss LATB, 0
+	bsf WREG, 0
+	movwf LATB
+	return
+    toggleRowTwo:
+	movlb 00h
+	movf LATE, w
+	bcf WREG, 0
+	btfss LATE, 0
+	bsf WREG, 0
+	movwf LATE
+	return
+    toggleRowThree:
+	movlb 00h
+	movf LATC, w
+	bcf WREG, 7
+	btfss LATC, 7
+	bsf WREG, 7
+	movwf LATC
+	return
+    toggleRowFour:
+	movlb 00h
+	movf LATB, w
+	bcf WREG, 3
+	btfss LATB, 3
+	bsf WREG, 3
+	movwf LATB
+	return
+    toggleRowFive:
+	movlb 00h
+	movf LATC, w
+	bcf WREG, 0
+	btfss LATC, 0
+	bsf WREG, 0
+	movwf LATC
+	return
+    toggleRowSix:
+	movlb 00h
+	movf LATC, w
+	bcf WREG, 6
+	btfss LATC, 6
+	bsf WREG, 6
+	movwf LATC
+	return
+    toggleRowSeven:
+	movlb 00h
+	movf LATC, w
+	bcf WREG, 1
+	btfss LATC, 1
+	bsf WREG, 1
+	movwf LATC
+	return
+    toggleRowEight:
+	movlb 00h
+	movf LATC, w
+	bcf WREG, 2
+	btfss LATC, 2
+	bsf WREG, 2
+	movwf LATC
 	return
     
     
@@ -165,10 +244,19 @@ ledMatrixPins:
     clrf TRISC
     clrf TRISE
     clrf TRISA
+    clrf LATA
+    clrf LATB
+    clrf LATC
+    clrf LATE
     return
 
 
 main:
+    setVariables:
+	movlb 00h
+	movlw 00h
+	movwf 20h
+	movwf 21h
     setPins:
 	movlb 00h ;select bank 0
 	call ledMatrixPins
@@ -199,11 +287,17 @@ main:
     setTimer:
 	movlb 0Bh
 	bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
-	movlw 83h
+	movlw 70h
 	movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 	
 ; Application process loop
 ;
+call toggleAllRow
+    
+movlw 07h
+call ledMatrixToggleRow
+movlw 07h
+call ledMatrixToggleColumn
 AppLoop:
     movlb 0Eh ;move to the bank with timer interupt flag
     
@@ -214,18 +308,21 @@ AppLoop:
     movlb 0Eh	
     bcf PIR0, 5
     
-    ;movlb 00h
-    ;movlw 00111000B
-    ;movwf LATC
-    ;movlw 010110B
-    ;movwf LATB
-    ;movlw 10B
-    ;movwf LATE
-    ;movlw 1B
-    ;movwf LATA
+    movlb 00h
+    movf 21h, w
+    sublw 08h
+    btfsc STATUS, 2
+    call nextColumn
+    movf 21h, w
+    decf WREG
+    btfsc WREG, 7
+    movlw 07h
+    call ledMatrixToggleRow
+    movf 21h, w
+    call ledMatrixToggleRow
+    incf 21h
     
-    movlw 00
-    call ledMatrixToggleColumn
+    
     
     movlb 00h
     btfss LATE, 2 ;if led is off, skip step to turn it off
@@ -235,7 +332,22 @@ AppLoop:
     goto ledOn
     
     goto    AppLoop 
-    
+    nextColumn:
+	clrf 21h
+	movf 20h, w
+	decf WREG
+	btfsc WREG, 7
+	movlw 07h
+	call ledMatrixToggleColumn
+	movf 20h, w
+	call ledMatrixToggleColumn
+	incf 20h
+	movf 20h, w
+	sublw 08h
+	btfsc STATUS, 2
+	clrf 20h
+	return
+	
     ledOn:
 	movlb 00h
 	bcf LATE, 2
@@ -246,5 +358,31 @@ AppLoop:
 	bsf LATE, 2
 	movlb 0Eh ;move to the bank with timer interupt flag
 	goto AppLoop
+    toggleAllColumn: ;set all rows high - no lights on
+	movlb 00h
+	movf 21h, w
+	call ledMatrixToggleColumn
+
+	movlb 00h
+	incf 21h
+	movf 21h, w
+	sublw 08h
+	btfss STATUS, 2
+	goto toggleAllColumn
+	clrf 21h
+	return
+    toggleAllRow: ;set all rows high - no lights on
+	movlb 00h
+	movf 21h, w
+	call ledMatrixToggleRow
+
+	movlb 00h
+	incf 21h
+	movf 21h, w
+	sublw 08h
+	btfss STATUS, 2
+	goto toggleAllRow
+	clrf 21h
+	return
     
     END     resetVec
