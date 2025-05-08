@@ -86,97 +86,92 @@ Start:
 ;
 PSECT   udata;,global,class=RAM,space=1,delta=2;,noexec
 
-
-;ledZero: db 0DEh ;define all as a list, then change the point you read in ram?? perhaps
-;ledOne: db 00Ch
-;ledTwo: db 0D9h
-;ledThree: db 05Dh
-;ledFour: db 00Fh
-;ledFive: db 057h
-;ledSix: db 0D7h
-;ledSeven: db 01Ch
-;ledEight: db 0DFh
-;ledNine: db 05Fh
-;ledDot: db 020h
-;ledStatesList: db 0DEh, 00Ch, 0D9h, 05Dh, 00Fh, 057h, 0D7h, 01Ch, 0DFh, 05Fh, 020h
-;ledCounter: db 00h
-;define variables as necessary 
 PSECT   MainCode,global,class=CODE,delta=2
+ledMatrixToggleColumn:
+    addwf PCL, f
+    goto toggleOne
+    goto toggleTwo
+    goto toggleThree
+    goto toggleFour
+    goto toggleFive
+    goto toggleSix
+    goto toggleSeven
+    goto toggleEight
+    toggleOne:
+	movlb 00h
+	movf LATB, w
+	bcf WREG, 4
+	btfss LATB, 4
+	bsf WREG, 4
+	movwf LATB
+	return
+    toggleTwo:
+	movlb 00h
+	movf LATC, w
+	bcf WREG, 4
+	btfss LATC, 4
+	bsf WREG, 4
+	movwf LATC
+	return
+    toggleThree:
+	movlb 00h
+	movf LATC, w
+	bcf WREG, 3
+	btfss LATC, 3
+	bsf WREG, 3
+	movwf LATC
+	return
+    toggleFour:
+	movlb 00h
+	movf LATB, w
+	bcf WREG, 1
+	btfss LATB, 1
+	bsf WREG, 1
+	movwf LATB
+	return
+    toggleFive:
+	movlb 00h
+	btfss LATC, 5
+	bsf LATC,5
+	btfsc LATC, 5
+	bcf LATC, 5
+	return
+    toggleSix:
+	movlb 00h
+	btfss LATB, 2
+	bsf LATB,2
+	btfsc LATB, 2
+	bcf LATB, 2
+	return
+    toggleSeven:
+	movlb 00h
+	btfss LATE, 1
+	bsf LATE,2
+	btfsc LATE, 1
+	bcf LATE, 1
+	return
+    toggleEight:
+	movlb 00h
+	btfss LATA, 0
+	bsf LATA,0
+	btfsc LATA, 0
+	bcf LATA, 0
+	return
     
-EightSegPins:
-    movlb 00h
+    
+   
+ledMatrixPins:
+    clrf TRISB
     clrf TRISC
-    clrf LATC
-    return
-
-EightSegDisplay:
-    movlb 00h
-    movlw 020h
-    addwf ledCounter, w
-    ;addwf ledCounter, w;store result in w
-    
-    clrf FSR0L
-    clrf FSR0H
-    
-    movwf FSR0L
-    ;movf BSR, w
-    ;btfsc BSR, 0
-    ;bsf FSR0L,7 ;move the location into the indirect file pointer register
-    ;lsrf WREG
-    
-    movf INDF0, w
-    movwf LATC
-    incf ledCounter
-    
-    movf ledCounter, w
-    sublw 0Ah
-    btfss STATUS, 0
-    clrf ledCounter
+    clrf TRISE
+    clrf TRISA
     return
 
 
 main:
-    defineVariables:
-	movlb 00h
-	ledZero equ 020h
-	ledOne equ 021h
-	ledTwo equ 022h
-	ledThree equ 023h
-	ledFour equ 024h
-	ledFive equ 025h
-	ledSix equ 026h
-	ledSeven equ 027h
-	ledEight equ 028h
-	ledNine equ 029h
-	ledDot equ 02Ah
-	ledCounter equ 02Bh
-	
-	movlw 0DEh
-	movwf ledZero
-	movlw 00Ch
-	movwf ledOne
-	movlw 0D9h
-	movwf ledTwo
-	movlw 05Dh
-	movwf ledThree
-	movlw 00Fh
-	movwf ledFour
-	movlw 057h
-	movwf ledFive
-	movlw 0D7h
-	movwf ledSix
-	movlw 01Ch
-	movwf ledSeven
-	movlw 0DFh
-	movwf ledEight
-	movlw 05Fh
-	movwf ledNine
-	movlw 020h
-	movwf ledDot
-	movlw 00h
-	movwf ledCounter
     setPins:
 	movlb 00h ;select bank 0
+	call ledMatrixPins
 	clrf PORTE
 	bcf TRISE, 2 ;set RE2 as output - board led
 	
@@ -188,7 +183,6 @@ main:
 	clrf ANSELB ;turn off analog for port B
 	bsf WPUB, 5 ;Set weak pull up for RB5
 	
-	call EightSegPins
 	
 	
     setInterrputs:
@@ -211,9 +205,6 @@ main:
 ; Application process loop
 ;
 AppLoop:
-    movlw PIR0
-    
-    
     movlb 0Eh ;move to the bank with timer interupt flag
     
     timerWait:
@@ -223,17 +214,18 @@ AppLoop:
     movlb 0Eh	
     bcf PIR0, 5
     
-    movlb 00h
-    movf 020h, w
+    ;movlb 00h
+    ;movlw 00111000B
+    ;movwf LATC
+    ;movlw 010110B
+    ;movwf LATB
+    ;movlw 10B
+    ;movwf LATE
+    ;movlw 1B
+    ;movwf LATA
     
-    clrf FSR0H
-    movlw 020h
-    movwf FSR0L
-    movf INDF0, w
-    
-    call EightSegDisplay
-    
-    ;movf ledZero, w
+    movlw 00
+    call ledMatrixToggleColumn
     
     movlb 00h
     btfss LATE, 2 ;if led is off, skip step to turn it off

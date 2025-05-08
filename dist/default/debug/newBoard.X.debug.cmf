@@ -14,8 +14,8 @@
 $build/default/debug/main.o
 Isr_Vec CODE 0 4 4 D 2 1
 Por_Vec CODE 0 0 0 2 2 1
-Start_Code CODE 0 6C 6C 7 2 1
-MainCode CODE 0 11 11 5B 2 1
+Start_Code CODE 0 79 79 7 2 1
+MainCode CODE 0 11 11 68 2 1
 config CONFIG 4 8007 8007 5 2 1
 # %UNUSED Section
 # This section enumerates the unused ranges of each CLASS. Each entry
@@ -60,9 +60,9 @@ BANK7 3A0-3EF 1
 BANK8 420-46F 1
 BANK9 4A0-4EF 1
 CONST 2-3 2
-CONST 73-3FFF 2
+CONST 80-3FFF 2
 ENTRY 2-3 2
-ENTRY 73-3FFF 2
+ENTRY 80-3FFF 2
 IDLOC 8000-8003 2
 SFR10 500-51F 1
 SFR11 580-59F 1
@@ -119,7 +119,7 @@ SFR61 1E80-1EEF 1
 SFR62 1F00-1F6F 1
 SFR63 1F80-1FEF 1
 CODE 2-3 2
-CODE 73-3FFF 2
+CODE 80-3FFF 2
 SFR0 4-7 1
 SFR2 100-11F 1
 SFR3 180-19F 1
@@ -148,9 +148,9 @@ BANK25 CA0-CBF 1
 BIGRAM 2000-27EF 1
 COMMON 70-7F 1
 STRCODE 2-3 2
-STRCODE 73-3FFF 2
+STRCODE 80-3FFF 2
 STRING 2-3 2
-STRING 73-3FFF 2
+STRING 80-3FFF 2
 # %LINETAB Section
 # This section enumerates the file/line to address mappings.
 # The beginning of the section is indicated by %LINETAB.
@@ -165,119 +165,132 @@ STRING 73-3FFF 2
 # All other numeric values are in decimal.
 %LINETAB
 $build/default/debug/main.o
-11 MainCode CODE >107:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-12 MainCode CODE >108:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-13 MainCode CODE >109:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-14 MainCode CODE >110:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-15 MainCode CODE >113:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-16 MainCode CODE >114:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-17 MainCode CODE >115:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-18 MainCode CODE >118:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-19 MainCode CODE >119:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-1A MainCode CODE >121:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-1B MainCode CODE >127:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-1C MainCode CODE >128:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-1D MainCode CODE >129:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-1E MainCode CODE >131:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-1F MainCode CODE >132:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-20 MainCode CODE >133:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-21 MainCode CODE >134:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-22 MainCode CODE >135:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-23 MainCode CODE >140:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-24 MainCode CODE >154:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-25 MainCode CODE >155:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-26 MainCode CODE >156:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-27 MainCode CODE >157:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-28 MainCode CODE >158:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-29 MainCode CODE >159:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-2A MainCode CODE >160:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-2B MainCode CODE >161:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-2C MainCode CODE >162:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-2D MainCode CODE >163:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-2E MainCode CODE >164:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-2F MainCode CODE >165:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-30 MainCode CODE >166:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-31 MainCode CODE >167:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-32 MainCode CODE >168:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-33 MainCode CODE >169:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-34 MainCode CODE >170:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-35 MainCode CODE >171:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-36 MainCode CODE >172:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-37 MainCode CODE >173:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-38 MainCode CODE >174:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-39 MainCode CODE >175:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-3A MainCode CODE >176:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-3B MainCode CODE >177:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-3C MainCode CODE >179:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-3D MainCode CODE >180:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-3E MainCode CODE >181:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-3F MainCode CODE >183:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-40 MainCode CODE >184:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-41 MainCode CODE >185:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-42 MainCode CODE >187:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-43 MainCode CODE >188:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-44 MainCode CODE >189:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-45 MainCode CODE >191:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-46 MainCode CODE >195:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-47 MainCode CODE >196:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-48 MainCode CODE >197:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-49 MainCode CODE >198:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-4A MainCode CODE >200:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-4B MainCode CODE >202:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-4C MainCode CODE >203:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-4D MainCode CODE >206:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-4E MainCode CODE >207:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-4F MainCode CODE >208:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-50 MainCode CODE >209:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-51 MainCode CODE >214:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-52 MainCode CODE >217:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-53 MainCode CODE >220:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-54 MainCode CODE >221:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-55 MainCode CODE >223:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-56 MainCode CODE >224:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-57 MainCode CODE >226:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-58 MainCode CODE >227:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-59 MainCode CODE >229:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-5A MainCode CODE >230:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-5B MainCode CODE >231:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-5C MainCode CODE >232:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-5D MainCode CODE >234:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-5E MainCode CODE >238:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-5F MainCode CODE >239:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-60 MainCode CODE >240:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-61 MainCode CODE >242:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-62 MainCode CODE >243:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-63 MainCode CODE >245:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-64 MainCode CODE >248:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-65 MainCode CODE >249:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-66 MainCode CODE >250:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-67 MainCode CODE >251:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-68 MainCode CODE >253:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-69 MainCode CODE >254:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-6A MainCode CODE >255:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-6B MainCode CODE >256:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-6C Start_Code CODE >76:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-6D Start_Code CODE >77:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-6E Start_Code CODE >78:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-6F Start_Code CODE >79:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-70 Start_Code CODE >80:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-71 Start_Code CODE >82:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-72 Start_Code CODE >83:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-0 Por_Vec CODE >68:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-1 Por_Vec CODE >69:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-4 Isr_Vec CODE >42:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-5 Isr_Vec CODE >43:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-6 Isr_Vec CODE >44:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-7 Isr_Vec CODE >47:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-8 Isr_Vec CODE >50:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-9 Isr_Vec CODE >51:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-A Isr_Vec CODE >52:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-B Isr_Vec CODE >53:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-C Isr_Vec CODE >54:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-D Isr_Vec CODE >55:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-E Isr_Vec CODE >57:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-F Isr_Vec CODE >58:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
-10 Isr_Vec CODE >60:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
+11 MainCode CODE >91:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+12 MainCode CODE >92:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+13 MainCode CODE >93:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+14 MainCode CODE >94:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+15 MainCode CODE >95:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+16 MainCode CODE >96:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+17 MainCode CODE >97:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+18 MainCode CODE >98:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+19 MainCode CODE >99:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+1A MainCode CODE >101:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+1B MainCode CODE >102:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+1C MainCode CODE >103:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+1D MainCode CODE >104:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+1E MainCode CODE >105:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+1F MainCode CODE >106:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+20 MainCode CODE >107:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+21 MainCode CODE >109:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+22 MainCode CODE >110:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+23 MainCode CODE >111:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+24 MainCode CODE >112:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+25 MainCode CODE >113:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+26 MainCode CODE >114:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+27 MainCode CODE >116:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+28 MainCode CODE >117:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+29 MainCode CODE >118:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+2A MainCode CODE >119:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+2B MainCode CODE >120:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+2C MainCode CODE >121:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+2D MainCode CODE >123:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+2E MainCode CODE >124:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+2F MainCode CODE >125:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+30 MainCode CODE >126:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+31 MainCode CODE >127:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+32 MainCode CODE >129:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+33 MainCode CODE >130:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+34 MainCode CODE >131:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+35 MainCode CODE >132:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+36 MainCode CODE >133:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+37 MainCode CODE >134:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+38 MainCode CODE >136:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+39 MainCode CODE >137:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+3A MainCode CODE >138:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+3B MainCode CODE >139:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+3C MainCode CODE >140:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+3D MainCode CODE >141:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+3E MainCode CODE >143:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+3F MainCode CODE >144:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+40 MainCode CODE >145:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+41 MainCode CODE >146:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+42 MainCode CODE >147:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+43 MainCode CODE >148:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+44 MainCode CODE >150:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+45 MainCode CODE >151:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+46 MainCode CODE >152:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+47 MainCode CODE >153:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+48 MainCode CODE >154:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+49 MainCode CODE >155:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+4A MainCode CODE >160:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+4B MainCode CODE >161:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+4C MainCode CODE >162:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+4D MainCode CODE >163:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+4E MainCode CODE >164:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+4F MainCode CODE >169:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+50 MainCode CODE >170:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+51 MainCode CODE >171:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+52 MainCode CODE >172:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+53 MainCode CODE >174:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+54 MainCode CODE >175:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+55 MainCode CODE >176:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+56 MainCode CODE >178:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+57 MainCode CODE >179:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+58 MainCode CODE >180:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+59 MainCode CODE >185:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+5A MainCode CODE >186:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+5B MainCode CODE >187:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+5C MainCode CODE >188:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+5D MainCode CODE >190:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+5E MainCode CODE >192:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+5F MainCode CODE >193:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+60 MainCode CODE >196:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+61 MainCode CODE >197:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+62 MainCode CODE >198:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+63 MainCode CODE >199:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+64 MainCode CODE >204:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+65 MainCode CODE >207:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+66 MainCode CODE >208:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+67 MainCode CODE >210:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+68 MainCode CODE >211:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+69 MainCode CODE >223:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+6A MainCode CODE >224:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+6B MainCode CODE >226:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+6C MainCode CODE >227:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+6D MainCode CODE >228:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+6E MainCode CODE >230:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+6F MainCode CODE >231:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+70 MainCode CODE >233:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+71 MainCode CODE >236:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+72 MainCode CODE >237:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+73 MainCode CODE >238:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+74 MainCode CODE >239:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+75 MainCode CODE >241:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+76 MainCode CODE >242:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+77 MainCode CODE >243:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+78 MainCode CODE >244:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+79 Start_Code CODE >76:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+7A Start_Code CODE >77:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+7B Start_Code CODE >78:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+7C Start_Code CODE >79:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+7D Start_Code CODE >80:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+7E Start_Code CODE >82:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+7F Start_Code CODE >83:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+0 Por_Vec CODE >68:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+1 Por_Vec CODE >69:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+4 Isr_Vec CODE >42:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+5 Isr_Vec CODE >43:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+6 Isr_Vec CODE >44:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+7 Isr_Vec CODE >47:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+8 Isr_Vec CODE >50:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+9 Isr_Vec CODE >51:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+A Isr_Vec CODE >52:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+B Isr_Vec CODE >53:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+C Isr_Vec CODE >54:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+D Isr_Vec CODE >55:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+E Isr_Vec CODE >57:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+F Isr_Vec CODE >58:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
+10 Isr_Vec CODE >60:C:\Users\Ollie\MPLABXProjects\newBoard.X\main.s
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.
@@ -290,7 +303,7 @@ F Isr_Vec CODE >58:C:\Users\Oliver\MPLABXProjects\newBoard.X\main.s
 # was defined in a psect then <psect> will be "-". File-name
 # is the name of the object file in which the symbol was defined.
 %SYMTAB
-__Hspace_0 73 0 ABS 0 - -
+__Hspace_0 80 0 ABS 0 - -
 __Hspace_1 0 0 ABS 0 - -
 __Hspace_4 10013 0 ABS 0 - -
 __Hudata_bank0 4 0 ABS 0 udata_bank0 -
@@ -333,7 +346,7 @@ __Hdata 4 0 ABS 0 data -
 __Lcode 4 0 ABS 0 code -
 __Ldata 4 0 ABS 0 data -
 __HPor_Vec 4 0 CODE 0 Por_Vec -
-__S0 73 0 ABS 0 - -
+__S0 80 0 ABS 0 - -
 __S1 0 0 ABS 0 - -
 __Ludata_bank10 4 0 ABS 0 udata_bank10 -
 __Ludata_bank11 4 0 ABS 0 udata_bank11 -
@@ -396,7 +409,7 @@ __Ludata_shr 4 0 ABS 0 udata_shr -
 # and size are in units of delta. The file address is in units of bytes.
 # All other numeric quantities are in decimal.
 %SEGMENTS
-Isr_Vec 0 4 8 6F 2
+Isr_Vec 0 4 8 7C 2
 Por_Vec 0 0 0 2 2
 # %NOTES Section
 # This section contains data of all the note-psects.  The beginning of the section
