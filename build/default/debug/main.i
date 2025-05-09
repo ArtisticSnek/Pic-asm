@@ -7959,17 +7959,17 @@ AppLoop:
 
     goto AppLoop
     nextColumn:
- clrf rowCounter
+ clrf rowCounter;reset counter to 0
  movf columnCounter, w
  decf WREG
  btfsc WREG, 7
- movlw 07h
- call ledMatrixToggleColumn
+ movlw 07h ;check if it has looped back round - if so the need to reset column 07
+ call ledMatrixToggleColumn ;toggle previous column
  movf columnCounter, w
- call ledMatrixToggleColumn
- incf columnCounter
+ call ledMatrixToggleColumn ;toggle current column
+ incf columnCounter ;increase the counter
  movf columnCounter, w
- sublw 08h
+ sublw 08h ;check if it has reached the end of the columns -if so, need to reset
  btfsc STATUS, 2
  clrf columnCounter
  return
@@ -7985,10 +7985,10 @@ AppLoop:
  movlb 0Eh ;move to the bank with timer interupt flag
  goto AppLoop
 
-    toggleAllColumn: ;set all rows high - no lights on
+    toggleAllColumn:
  movlb 00h
- clrf columnCounter
- toggleAllColumnLoop:
+ clrf columnCounter ;reset counter
+ toggleAllColumnLoop: ;iterate through each column, toggling it as you go
      movf columnCounter, w
      call ledMatrixToggleColumn
 
@@ -8001,7 +8001,7 @@ AppLoop:
  clrf columnCounter
  return
 
-    toggleAllRow: ;set all rows high - no lights on
+    toggleAllRow:
  movlb 00h
  clrf rowCounter
  toggleAllRowLoop:
@@ -8015,6 +8015,17 @@ AppLoop:
      btfss STATUS, 2
      goto toggleAllRowLoop
  clrf rowCounter
+ return
+    toggleAllLeds:
+ movlb 00h
+ movlw 0FFh
+ xorwf LATC, f
+ movlw 0Fh
+ xorwf LATB, f
+ movlw 03h
+ xorwf LATE, f
+ movlw 01h
+ xorwf LATA, f
  return
 
     END resetVec

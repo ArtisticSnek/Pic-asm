@@ -1,4 +1,4 @@
-__S0 C8 0 ABS 0
+__S0 D2 0 ABS 0
 __S1 0 0 ABS 0
 __Hudata_bank10 4 0 ABS 0
 __Ludata_bank10 4 0 ABS 0
@@ -50,7 +50,7 @@ __Hudata 4 0 ABS 0
 __Ludata 4 0 ABS 0
 __Hudata_bank1 4 0 ABS 0
 __Ludata_bank1 4 0 ABS 0
-__Hspace_0 C8 0 ABS 0
+__Hspace_0 D2 0 ABS 0
 __Lspace_0 0 0 ABS 0
 __Hspace_1 0 0 ABS 0
 __Lspace_1 0 0 ABS 0
@@ -81,7 +81,7 @@ __Ludata_bank9 4 0 ABS 0
 __Hudata_bank25 4 0 ABS 0
 __Ludata_bank25 4 0 ABS 0
 %segments
-Isr_Vec 8 18F CODE 8 0
+Isr_Vec 8 1A3 CODE 8 0
 Por_Vec 0 3 CODE 0 0
 %locals
 build/default/debug/main.o
@@ -101,13 +101,13 @@ main.s
 59 10 0 CODE 0
 67 0 0 CODE 0
 68 1 0 CODE 0
-75 C1 0 CODE 0
-76 C2 0 CODE 0
-77 C3 0 CODE 0
-78 C4 0 CODE 0
-79 C5 0 CODE 0
-81 C6 0 CODE 0
-82 C7 0 CODE 0
+75 CB 0 CODE 0
+76 CC 0 CODE 0
+77 CD 0 CODE 0
+78 CE 0 CODE 0
+79 CF 0 CODE 0
+81 D0 0 CODE 0
+82 D1 0 CODE 0
 91 11 0 CODE 0
 92 12 0 CODE 0
 93 13 0 CODE 0
@@ -284,3 +284,13 @@ main.s
 330 BE 0 CODE 0
 331 BF 0 CODE 0
 332 C0 0 CODE 0
+334 C1 0 CODE 0
+335 C2 0 CODE 0
+336 C3 0 CODE 0
+337 C4 0 CODE 0
+338 C5 0 CODE 0
+339 C6 0 CODE 0
+340 C7 0 CODE 0
+341 C8 0 CODE 0
+342 C9 0 CODE 0
+343 CA 0 CODE 0

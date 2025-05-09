@@ -332,14 +332,14 @@ AppLoop:
 	return
     toggleAllLeds:
 	movlb 00h
-	movlw FFh
-	xor LATC, f
+	movlw 0FFh
+	xorwf LATC, f
 	movlw 0Fh
-	xor LATB, f
+	xorwf LATB, f
 	movlw 03h
-	xor LATE, f
+	xorwf LATE, f
 	movlw 01h
-	xor LATA, f
+	xorwf LATA, f
 	return
     
     END     resetVec
