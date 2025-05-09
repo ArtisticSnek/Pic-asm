@@ -7859,7 +7859,23 @@ ledMatrixToggleRow:
  movlw 04h
  xorwf LATC, f
  return
-
+togglePixel:
+    movlb 00h
+    andwf pixelX, f
+    andwf pixelY, f
+    movf pixelX, w
+    lsrf WREG, w
+    lsrf WREG, w
+    lsrf WREG, w
+    lsrf WREG, w
+    call ledMatrixToggleColumn
+    movf pixelY, w
+    call ledMatrixToggleRow
+    movlw 0F0h
+    movwf pixelX
+    movlw 00Fh
+    movwf pixelY
+    return
 
 
 ledMatrixPins:
@@ -7873,6 +7889,23 @@ ledMatrixPins:
     clrf LATE
     return
 
+imagePixelMap:
+brw
+retlw 12h
+retlw 15h
+retlw 22h
+retlw 25h
+retlw 41h
+retlw 46h
+retlw 51h
+retlw 56h
+retlw 62h
+retlw 63h
+retlw 64h
+retlw 65h
+retlw 0FFh
+
+
 
 main:
     setVariables:
@@ -7882,6 +7915,17 @@ main:
  rowCounter equ 21h
  movwf columnCounter
  movwf rowCounter
+ pixelX equ 22h
+ pixelY equ 23h
+ movlw 0F0h
+ movwf pixelX
+ movlw 00Fh
+ movwf pixelY
+
+ pixelCounter equ 24h
+ clrf pixelCounter
+ prevPixel equ 25h
+ clrf prevPixel
     setPins:
  movlb 00h ;select bank 0
  call ledMatrixPins
@@ -7895,8 +7939,6 @@ main:
  movlb 3Eh
  clrf ANSELB ;turn off analog for port B
  bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
-
-
 
     setInterrputs:
  movlb 3Eh
@@ -7919,11 +7961,8 @@ main:
 ; Application process loop
 ;
 call toggleAllRow
-
-movlw 07h
-call ledMatrixToggleRow
-movlw 07h
-call ledMatrixToggleColumn
+call imagePixelMap
+call togglePixel
 AppLoop:
     movlb 0Eh ;move to the bank with timer interupt flag
 
@@ -7934,21 +7973,20 @@ AppLoop:
     movlb 0Eh
     bcf PIR0, 5
 
-    movlb 00h;select bank with variable
-    movf rowCounter, w
-    sublw 08h
-    btfsc STATUS, 2 ;if WREG-8=0, end of row has been reached
-    call nextColumn ;handle this accordingly
-    movf rowCounter, w
-    decf WREG
-    btfsc WREG, 7 ;If subtracting one makes WREG = FF, then it was 0, so previous row is 07
-    movlw 07h
-    call ledMatrixToggleRow ;toggle this previous row
-    movf rowCounter, w
-    call ledMatrixToggleRow ;toggle the current row
-    incf rowCounter ;increase the counter for next time round
+    movlb 00h
+    movf prevPixel, w
+    call imagePixelMap
+    call togglePixel
 
-
+    movf pixelCounter, w
+    call imagePixelMap
+    btfsc WREG, 7 ;pixels end with a FFh, so when this is reached, clear
+    goto resetPixelCounter
+    call togglePixel
+    movf pixelCounter, w
+    movwf prevPixel
+    incf pixelCounter
+    pastPixelReset:
 
     movlb 00h
     btfss LATE, 2 ;if led is off, skip step to turn it off
@@ -7958,22 +7996,14 @@ AppLoop:
     goto ledOn
 
     goto AppLoop
-    nextColumn:
- clrf rowCounter;reset counter to 0
- movf columnCounter, w
- decf WREG
- btfsc WREG, 7
- movlw 07h ;check if it has looped back round - if so the need to reset column 07
- call ledMatrixToggleColumn ;toggle previous column
- movf columnCounter, w
- call ledMatrixToggleColumn ;toggle current column
- incf columnCounter ;increase the counter
- movf columnCounter, w
- sublw 08h ;check if it has reached the end of the columns -if so, need to reset
- btfsc STATUS, 2
- clrf columnCounter
- return
-
+    resetPixelCounter:
+ movlb 00h
+ clrf pixelCounter
+ clrf prevPixel
+ movlw 00h
+ call imagePixelMap
+ call togglePixel
+ goto pastPixelReset
     ledOn:
  movlb 00h
  bcf LATE, 2

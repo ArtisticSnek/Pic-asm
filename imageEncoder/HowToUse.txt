@@ -1,0 +1,4 @@
+Edit python file with path to 8x8 black and white image
+run python file
+copy paste contents of lookupTable.asm into imageDisp.s
+run imageDisp.s
