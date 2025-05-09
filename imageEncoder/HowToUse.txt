@@ -2,3 +2,21 @@ Edit python file with path to 8x8 black and white image
 run python file
 copy paste contents of lookupTable.asm into imageDisp.s
 run imageDisp.s
+
+Pin on display		Pin on board
+1			RC0
+2			RC1
+3			RC4
+4			RC3
+5			RC2
+6			RC5
+7			RC6
+8			RC7
+9			RB0
+10			RB1
+11			RB2
+12			RB3
+13			RB4
+14			RE0
+15			RE1
+16			RA0
