@@ -7772,6 +7772,10 @@ main:
  clrf character
  controlRegister equ 24h
  clrf controlRegister
+ udcNumber equ 26h ;the custom character number
+ clrf udcNumber
+ udcTableIndex equ 27h ;index in the table currently being read from
+ clrf udcTableIndex
 
     setPins:
  movlb 00h ;select bank 0
@@ -7827,12 +7831,18 @@ main:
 ; Application process loop
 ;
 movlb 00h
-movlw 7h
+bcf LATC, 0 ;reset display
+bsf LATC, 0
+
+movlb 00h
+movlw 7h ;generated in python code
 movwf stringLength
 
-movlw 00h
+movlw 10h ; 7-clear flash/6-unused/5-self test result/4-blinking enable/3-flash enable/2-0 brightness x3
 movwf controlRegister
 call setControlRegister
+
+call writeCustomCharacter
 
 AppLoop:
     movlb 0Eh ;move to the bank with timer interupt flag
@@ -7847,6 +7857,66 @@ AppLoop:
 
 
     goto AppLoop
+
+writeBlock:
+    movlb 00h
+    bcf LATE, 0 ;enable write
+    call fastDelay
+
+    movlb 00h
+    bsf LATE, 0 ;disable write
+    call fastDelay
+    return
+
+writeCustomCharacter:
+    movlb 00h
+
+    movlw 20h
+    movwf LATA ;FL high, rest are low - write to UDC
+
+    clrf udcTableIndex ;point to attribute 0 of table
+    movf udcNumber, w
+    call udcTable ;get atribute #0 - UDC address. Table of all UDC -> table specific to one UDC -> data
+    movwf LATD ;move this address to port D
+    call fastDelay
+
+    movlb 00h
+    bcf LATE, 1 ;enable chip
+    call fastDelay
+
+    ;Write cycle 1 only sends the UDC address
+    call writeBlock
+
+    movlb 00h
+    movlw 28h
+    movwf LATA ;set A register to the correct value to start writing data
+    ;next 7 write cycles are sending each row of the character
+    ;register udcTableIndex will be used to keep track of what rows have been sent, by knowing what rows of the table have been read
+    sendingCharacterRows:
+ movlb 00h
+ incf udcTableIndex
+
+ movf udcNumber, w
+ call udcTable ;wreg now contains the row of pixels to send
+
+ movlb 00h
+ movwf LATD
+ call fastDelay
+
+ call writeBlock
+
+ movlb 00h
+ incf LATA
+ movlw 07h
+ subwf udcTableIndex, w ;Compare current index to 7 (number of rows)
+ btfss STATUS, 2;check if zero - if so, sending is completed
+ goto sendingCharacterRows
+    clrf udcTableIndex
+    bsf LATE, 1 ;enable chip
+    call fastDelay
+    return
+
+
 
 setControlRegister:
     movlb 00h
@@ -7863,46 +7933,41 @@ setControlRegister:
     movwf LATD ;send command
     call fastDelay
 
-    movlb 00h
-    bcf LATE, 0 ;enable write
-    call fastDelay
-
-    movlb 00h
-    bsf LATE, 0 ;disable write
-    call fastDelay
+    call writeBlock
 
     movlb 00h
     clrf LATD ;clear data
     bsf LATE, 1 ;disable chip enable
     call fastDelay
+    return
 
 writeString:
     movlb 00h
     writingToDisplay:
- movf stringIndex, w
+ movf stringIndex, w ;string index references character code in table
  call string ;will set w to the character code
- movwf character
+ movwf character ;move this to the character register - will be read by setCharacter
  call setCharacter
 
  movlb 00h
  movf stringIndex, w
- subwf stringLength, w
+ subwf stringLength, w ;Compare current index to length of string
  btfsc STATUS, 2;check if zero - if so, string is completed
  goto doneWritingToDisplay
- incf stringIndex
+ incf stringIndex ;if not done, increment display index and string index
  incf displayIndex
- goto writingToDisplay
+ goto writingToDisplay ;loop back
     doneWritingToDisplay:
     movlb 00h
-    clrf displayIndex
+    clrf displayIndex ;reset these registers
     clrf stringIndex
     return
 
 
 setCharacter:
     movlb 00h
-    movlw 78h
-    addwf displayIndex, w
+    movlw 78h ;set up A register to write a default character
+    addwf displayIndex, w ;add the display index - such that the other parts of the A register remain untouched
     movwf LATA
     call fastDelay
 
@@ -7915,23 +7980,12 @@ setCharacter:
     movwf LATD ;send character
     call fastDelay
 
-    movlb 00h
-    bcf LATE, 0 ;enable write
-    call fastDelay
-
-    movlb 00h
-    bsf LATE, 0 ;disable write
-    call fastDelay
+    call writeBlock
 
     movlb 00h
     clrf LATD ;clear data
     bsf LATE, 1 ;disable chip enable
     call fastDelay
-
-    ;reset A pins back to how they should be
-    ;movf LATA, w
-    ;andlw 0F8h
-    ;movwf LATA
 
     return
 
@@ -7946,9 +8000,9 @@ fastDelay:
     clrf TMR1L
     return
 
-string:
+string: ;generated in python code
 brw
-retlw 0b1000010
+retlw 0b10000000
 retlw 0b1101111
 retlw 0b1101100
 retlw 0b1101100
@@ -7956,5 +8010,23 @@ retlw 0b1101111
 retlw 0b1100011
 retlw 0b1101011
 retlw 0b1110011
+
+
+udcTable:
+    brw
+    call customCharacter1
+
+customCharacter1: ;table defining characteristics of a custom character
+    movlb 00h
+    movf udcTableIndex, w
+    brw
+    retlw 00h ; UDC character address
+    retlw 03h ; Row 0
+    retlw 1Fh
+    retlw 00h
+    retlw 1Fh
+    retlw 00h
+    retlw 1Fh
+    retlw 00h ; Row 7
 
     END resetVec
