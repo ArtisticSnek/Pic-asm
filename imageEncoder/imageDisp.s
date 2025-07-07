@@ -205,19 +205,48 @@ ledMatrixPins:
 
 imagePixelMap:
 brw
+retlw 01h
+retlw 02h
+retlw 05h
+retlw 06h
+retlw 10h
+retlw 11h
 retlw 12h
+retlw 13h
+retlw 14h
 retlw 15h
+retlw 16h
+retlw 17h
+retlw 20h
+retlw 21h
 retlw 22h
+retlw 23h
+retlw 24h
 retlw 25h
+retlw 26h
+retlw 27h
+retlw 30h
+retlw 31h
+retlw 32h
+retlw 33h
+retlw 34h
+retlw 35h
+retlw 36h
+retlw 37h
 retlw 41h
+retlw 42h
+retlw 43h
+retlw 44h
+retlw 45h
 retlw 46h
-retlw 51h
-retlw 56h
-retlw 62h
+retlw 52h
+retlw 53h
+retlw 54h
+retlw 55h
 retlw 63h
 retlw 64h
-retlw 65h
 retlw 0FFh
+
 
 
 
@@ -317,6 +346,7 @@ AppLoop:
 	movlw 00h
 	call imagePixelMap
 	call togglePixel
+	incf pixelCounter
 	goto pastPixelReset
     ledOn:
 	movlb 00h

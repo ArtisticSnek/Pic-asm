@@ -1,0 +1,12 @@
+pin map
+
+Display		Microcontroller		Notes
+A0-A4		A0-A4
+CLS		High			Clock select - matters only for refresh rate
+CLK		Floating
+WR		E0			Low to write anything
+CE		E1			Low to enable chip
+RD		A5			Low to read anything
+RST		C0
+FL		C1			High to set character, low to go into logic/memory
+D0-D7		D0-D7

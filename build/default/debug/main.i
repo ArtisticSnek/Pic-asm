@@ -7726,28 +7726,15 @@ PSECT Isr_Vec,global,class=CODE,delta=2
 global IsrHandler
 IsrHandler:
     movlb 3Eh
-    btfsc IOCBF,5 ;skips when the button has not been pressed
-    goto clockSpeedChange
-    pastClockSpeedChange:
-
+    ;handle interrupts
     goto IsrExit
-
-    clockSpeedChange:
- bcf IOCBF, 5 ;reset interrupt that caused this
- movlb 0Bh
- btfss T0CON1, 2 ; if the timer is slow now, don't set it slow again
- movlw 85h;10000011B
- btfsc T0CON1, 2; if the timer is fast now, don't set it fast again
- movlw 70h;10000111B
- movwf T0CON1 ;set up Timer0 as LFINTOC, with new speed
- goto pastClockSpeedChange
 IsrExit:
     retfie ; Return from interrupt
 
 ;
 ; Power-On-Reset entry point
 ;
-PSECT Por_Vec,global,class=CODE,delta=2;, reloc = 0
+PSECT Por_Vec,global,class=CODE,delta=2
 global resetVec
 resetVec:
     pagesel Start
@@ -7772,290 +7759,202 @@ Start:
 PSECT udata;,global,class=RAM,space=1,delta=2;,noexec
 
 PSECT MainCode,global,class=CODE,delta=2
-
-ledMatrixToggleColumn:
-    addwf PCL, f
-    goto toggleColumnOne
-    goto toggleColumnTwo
-    goto toggleColumnThree
-    goto toggleColumnFour
-    goto toggleColumnFive
-    goto toggleColumnSix
-    goto toggleColumnSeven
-    goto toggleColumnEight
-    toggleColumnOne:
- movlw 10h
- xorwf LATB, f
- return
-    toggleColumnTwo:
- movlw 10h
- xorwf LATC, f
- return
-    toggleColumnThree:
- movlw 08h
- xorwf LATC, f
- return
-    toggleColumnFour:
- movlw 02h
- xorwf LATB, f
- return
-    toggleColumnFive:
- movlw 20h
- xorwf LATC, f
- return
-    toggleColumnSix:
- movlw 04h
- xorwf LATB, f
- return
-    toggleColumnSeven:
- movlw 02h
- xorwf LATE, f
- return
-    toggleColumnEight:
- movlw 01h
- xorwf LATA, f
- return
-
-ledMatrixToggleRow:
-    movlb 00h
-    addwf PCL, f
-    goto toggleRowOne
-    goto toggleRowTwo
-    goto toggleRowThree
-    goto toggleRowFour
-    goto toggleRowFive
-    goto toggleRowSix
-    goto toggleRowSeven
-    goto toggleRowEight
-    toggleRowOne:
- movlw 01h
- xorwf LATB, f
- return
-    toggleRowTwo:
- movlw 01h
- xorwf LATE, f
- return
-    toggleRowThree:
- movlw 80h
- xorwf LATC, f
- return
-    toggleRowFour:
- movlw 08h
- xorwf LATB, f
- return
-    toggleRowFive:
- movlw 01h
- xorwf LATC, f
- return
-    toggleRowSix:
- movlw 40h
- xorwf LATC, f
- return
-    toggleRowSeven:
- movlw 02h
- xorwf LATC, f
- return
-    toggleRowEight:
- movlw 04h
- xorwf LATC, f
- return
-togglePixel:
-    movlb 00h
-    andwf pixelX, f
-    andwf pixelY, f
-    movf pixelX, w
-    lsrf WREG, w
-    lsrf WREG, w
-    lsrf WREG, w
-    lsrf WREG, w
-    call ledMatrixToggleColumn
-    movf pixelY, w
-    call ledMatrixToggleRow
-    movlw 0F0h
-    movwf pixelX
-    movlw 00Fh
-    movwf pixelY
-    return
-
-
-ledMatrixPins:
-    clrf TRISB
-    clrf TRISC
-    clrf TRISE
-    clrf TRISA
-    clrf LATA
-    clrf LATB
-    clrf LATC
-    clrf LATE
-    return
-
-imagePixelMap:
-brw
-retlw 12h
-retlw 15h
-retlw 22h
-retlw 25h
-retlw 41h
-retlw 46h
-retlw 51h
-retlw 56h
-retlw 62h
-retlw 63h
-retlw 64h
-retlw 65h
-retlw 0FFh
-
-
-
 main:
     setVariables:
  movlb 00h
- movlw 00h
- columnCounter equ 20h
- rowCounter equ 21h
- movwf columnCounter
- movwf rowCounter
- pixelX equ 22h
- pixelY equ 23h
- movlw 0F0h
- movwf pixelX
- movlw 00Fh
- movwf pixelY
+ displayIndex equ 20h
+ clrf displayIndex
+ stringIndex equ 21h
+ clrf stringIndex
+ stringLength equ 22h
+ clrf stringLength
+ character equ 23h
+ clrf character
+ controlRegister equ 24h
+ clrf controlRegister
 
- pixelCounter equ 24h
- clrf pixelCounter
- prevPixel equ 25h
- clrf prevPixel
     setPins:
  movlb 00h ;select bank 0
- call ledMatrixPins
+
+ clrf PORTD ;All of pins D are used for data
+ clrf TRISD ;set as outputs
+
  clrf PORTE
- bcf TRISE, 2 ;set ((PORTE) and 07Fh), 2 as output - board led
+ clrf TRISE ; ((PORTE) and 07Fh), 0 - Write enable, ((PORTE) and 07Fh), 1 - Chip enable, ((PORTE) and 07Fh), 2 - clock/ board LED
+ bsf LATE, 0
+ bsf LATE, 1
+
+ clrf PORTA
+ clrf TRISA; ((PORTA) and 07Fh), 0 -4 Data, ((PORTA) and 07Fh), 5 - FL
+ bsf LATA, 3
+ bsf LATA, 4
+ bsf LATA, 5 ;Disable read
+
+ clrf PORTC
+ clrf TRISC; ((PORTC) and 07Fh), 0 - RST, ((PORTC) and 07Fh), 1 - Read enable
+ bsf LATC, 0
+ bsf LATC, 1
 
  clrf PORTB ;reset Port B
- clrf TRISB
  bsf TRISB, 5 ;set ((PORTB) and 07Fh), 5 as input - board button
 
  movlb 3Eh
  clrf ANSELB ;turn off analog for port B
  bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
 
+ clrf ANSELA
+ clrf ANSELB
+ clrf ANSELC
+ clrf ANSELD
+
     setInterrputs:
- movlb 3Eh
- bsf IOCBP, 5 ;enable detect for positive edge
- bsf IOCBN, 5 ;enable detect for negative edge
- bcf IOCBF, 5 ;clear interrupt flag
 
- bsf INTCON, 7 ;enable global interrupts
-
- movlb 0Eh
- bsf PIE0, 4 ;enable interrupt on change
 
     setTimer:
  movlb 0Bh
  bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
 
- movlw 70h
+ movlw 74h
  movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
+
+ movlb 04h
+
+ movlw 00h ;set up Timer1 as 1:1 prescaleer, synced, and disabled
+ movwf T1CON
+ movlw 07h ;set Timer1 as MFINTOSC 32khz
+ movwf T1CLK
 
 ; Application process loop
 ;
-call toggleAllRow
-call imagePixelMap
-call togglePixel
+movlb 00h
+movlw 7h
+movwf stringLength
+
+movlw 00h
+movwf controlRegister
+call setControlRegister
+
 AppLoop:
     movlb 0Eh ;move to the bank with timer interupt flag
-
     timerWait:
  btfss PIR0, 5; timer0 interupt flag - if set, then has overflowed
  goto timerWait
-
     movlb 0Eh
     bcf PIR0, 5
 
     movlb 00h
-    movf prevPixel, w
-    call imagePixelMap
-    call togglePixel
+    call writeString
 
-    movf pixelCounter, w
-    call imagePixelMap
-    btfsc WREG, 7 ;pixels end with a FFh, so when this is reached, clear
-    goto resetPixelCounter
-    call togglePixel
-    movf pixelCounter, w
-    movwf prevPixel
-    incf pixelCounter
-    pastPixelReset:
-
-    movlb 00h
-    btfss LATE, 2 ;if led is off, skip step to turn it off
-    goto ledOff
-
-    btfsc LATE, 2 ;if led is on, skip step to turn it on
-    goto ledOn
 
     goto AppLoop
-    resetPixelCounter:
- movlb 00h
- clrf pixelCounter
- clrf prevPixel
- movlw 00h
- call imagePixelMap
- call togglePixel
- goto pastPixelReset
-    ledOn:
- movlb 00h
- bcf LATE, 2
- movlb 0Eh ;move to the bank with timer interupt flag
- goto AppLoop
-    ledOff:
- movlb 00h
- bsf LATE, 2
- movlb 0Eh ;move to the bank with timer interupt flag
- goto AppLoop
 
-    toggleAllColumn:
- movlb 00h
- clrf columnCounter ;reset counter
- toggleAllColumnLoop: ;iterate through each column, toggling it as you go
-     movf columnCounter, w
-     call ledMatrixToggleColumn
+setControlRegister:
+    movlb 00h
+    movlw 30h
+    movwf LATA
+    call fastDelay
 
-     movlb 00h
-     incf columnCounter
-     movf columnCounter, w
-     sublw 08h
-     btfss STATUS, 2
-     goto toggleAllColumnLoop
- clrf columnCounter
- return
+    movlb 00h
+    bcf LATE, 1 ;enable chip
+    call fastDelay
 
-    toggleAllRow:
- movlb 00h
- clrf rowCounter
- toggleAllRowLoop:
-     movf rowCounter, w
-     call ledMatrixToggleRow
+    movlb 00h
+    movf controlRegister, w
+    movwf LATD ;send command
+    call fastDelay
 
-     movlb 00h
-     incf rowCounter
-     movf rowCounter, w
-     sublw 08h
-     btfss STATUS, 2
-     goto toggleAllRowLoop
- clrf rowCounter
- return
-    toggleAllLeds:
+    movlb 00h
+    bcf LATE, 0 ;enable write
+    call fastDelay
+
+    movlb 00h
+    bsf LATE, 0 ;disable write
+    call fastDelay
+
+    movlb 00h
+    clrf LATD ;clear data
+    bsf LATE, 1 ;disable chip enable
+    call fastDelay
+
+writeString:
+    movlb 00h
+    writingToDisplay:
+ movf stringIndex, w
+ call string ;will set w to the character code
+ movwf character
+ call setCharacter
+
  movlb 00h
- movlw 0FFh
- xorwf LATC, f
- movlw 0Fh
- xorwf LATB, f
- movlw 03h
- xorwf LATE, f
- movlw 01h
- xorwf LATA, f
- return
+ movf stringIndex, w
+ subwf stringLength, w
+ btfsc STATUS, 2;check if zero - if so, string is completed
+ goto doneWritingToDisplay
+ incf stringIndex
+ incf displayIndex
+ goto writingToDisplay
+    doneWritingToDisplay:
+    movlb 00h
+    clrf displayIndex
+    clrf stringIndex
+    return
+
+
+setCharacter:
+    movlb 00h
+    movlw 78h
+    addwf displayIndex, w
+    movwf LATA
+    call fastDelay
+
+    movlb 00h
+    bcf LATE, 1 ;enable chip
+    call fastDelay
+
+    movlb 00h
+    movf character, w
+    movwf LATD ;send character
+    call fastDelay
+
+    movlb 00h
+    bcf LATE, 0 ;enable write
+    call fastDelay
+
+    movlb 00h
+    bsf LATE, 0 ;disable write
+    call fastDelay
+
+    movlb 00h
+    clrf LATD ;clear data
+    bsf LATE, 1 ;disable chip enable
+    call fastDelay
+
+    ;reset A pins back to how they should be
+    ;movf LATA, w
+    ;andlw 0F8h
+    ;movwf LATA
+
+    return
+
+fastDelay:
+    movlb 04h
+    bsf T1CON, 0 ;enable timer
+    waitForFastTimer:
+ btfss TMR1L, 4 ;in theory, could look at bit 4 to get ~280us clock
+ goto waitForFastTimer
+    bcf T1CON, 0
+    clrf TMR1H
+    clrf TMR1L
+    return
+
+string:
+brw
+retlw 0b1000010
+retlw 0b1101111
+retlw 0b1101100
+retlw 0b1101100
+retlw 0b1101111
+retlw 0b1100011
+retlw 0b1101011
+retlw 0b1110011
 
     END resetVec
