@@ -149,13 +149,22 @@ bcf LATC, 0 ;reset display
 bsf LATC, 0
 	
 movlb 00h
-movlw 7h ;generated in python code
+movlw 6h
 movwf stringLength
 	
-movlw 10h ; 7-clear flash/6-unused/5-self test result/4-blinking enable/3-flash enable/2-0 brightness x3
+movlw 00h ; 7-clear flash/6-unused/5-self test result/4-blinking enable/3-flash enable/2-0 brightness x3
 movwf controlRegister
 call setControlRegister
 	
+call writeCustomCharacter
+movlb 00h
+movlw 01h
+movwf udcNumber
+call writeCustomCharacter
+	
+movlb 00h
+movlw 02h
+movwf udcNumber
 call writeCustomCharacter
 
 AppLoop:
@@ -186,7 +195,8 @@ writeCustomCharacter:
     movlb 00h
     
     movlw 20h
-    movwf LATA ;FL high, rest are low - write to UDC
+    addwf udcNumber, w
+    movwf LATA ;FL high, rest are low - write to UDC, besides the character in which to write
     
     clrf udcTableIndex ;point to attribute 0 of table
     movf udcNumber, w
@@ -202,7 +212,7 @@ writeCustomCharacter:
     call writeBlock
     
     movlb 00h
-    movlw 28h
+    movlw 28h ;00101000
     movwf LATA ;set A register to the correct value to start writing data
     ;next 7 write cycles are sending each row of the character
     ;register udcTableIndex will be used to keep track of what rows have been sent, by knowing what rows of the table have been read
@@ -314,34 +324,65 @@ fastDelay:
     clrf TMR1L
     return
     
-string: ;generated in python code
+string:
 brw
 retlw 0b10000000
-retlw 0b1101111
-retlw 0b1101100
-retlw 0b1101100
-retlw 0b1101111
-retlw 0b1100011
-retlw 0b1101011
-retlw 0b1110011
+retlw 0b10000001
+retlw 0b10000010
+retlw 0b10000011
+retlw 0b1101001
+retlw 0b1101110
+retlw 0b1100111
     
     
 udcTable:
+    lslf WREG
     brw
+    call customCharacter0
+    return
     call customCharacter1
+    return
+    call customCharacter2
+    return
+    
+customCharacter0: ;table defining characteristics of a custom character
+    movlb 00h
+    movf udcTableIndex, w
+    brw
+    retlw 00h ; UDC character address
+    retlw 01h ; Row 0
+    retlw 02h
+    retlw 03h
+    retlw 04h
+    retlw 05h
+    retlw 06h
+    retlw 07h ; Row 7
     
 customCharacter1: ;table defining characteristics of a custom character
     movlb 00h
     movf udcTableIndex, w
     brw
-    retlw 00h ; UDC character address
-    retlw 03h ; Row 0
-    retlw 1Fh
-    retlw 00h
-    retlw 1Fh
-    retlw 00h
-    retlw 1Fh
-    retlw 00h ; Row 7
+    retlw 01h ; UDC character address
+    retlw 1Fh ; Row 0
+    retlw 11h
+    retlw 11h
+    retlw 11h
+    retlw 11h
+    retlw 11h
+    retlw 1Fh ; Row 7
+
+customCharacter2:
+movlb 00h
+movf udcTableIndex, w
+brw
+retlw 02h
+retlw 0b10111
+retlw 0b10101
+retlw 0b11101
+retlw 0b00001
+retlw 0b11111
+retlw 0b10000
+retlw 0b11111
 
     END     resetVec
     

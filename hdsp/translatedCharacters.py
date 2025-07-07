@@ -138,3 +138,24 @@ def createTable(string):
     for i in string:
         print(f"retlw {charToBin(i)}")
 
+from PIL import Image
+def createPixelMap(number, imageFile):
+    pic = Image.open(imageFile)
+    pixels = pic.load()
+    output = [f"customCharacter{number}:\nmovlb 00h\nmovf udcTableIndex, w\nbrw\nretlw 0{hex(number).lstrip('0x')+'h'}"]
+    output+=["retlw 0b" for i in range(0,7)]
+    for y in range(0,7):
+        for x in range(0,5):
+            if pixels[x,y] == (0,0,0,255):
+                output[y+1]+="1"
+            else:
+                output[y+1]+="0"
+        output[y+1]+="\n"
+    with open("characterTable.asm", "w") as f:
+        f.writelines(output)
+        f.close()
+    for i in output:
+        print(i.rstrip("\n"))
+    
+            
+

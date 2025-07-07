@@ -1,24 +1,24 @@
 ### HEXMate logfile and output summary ###
 
 ### Command-line arguments ###
- C:\Users\Ollie\AppData\Local\Temp\xcAs9p8.\driver_tmp_3.o
+ C:\Users\Ollie\AppData\Local\Temp\xcAsp5s.\driver_tmp_3.o
  -Odist/default/debug\newBoard.X.debug.hex
  -logfile=dist/default/debug\newBoard.X.debug.hxl
  -addressing=2
 
 ### Memory Usage ###
  Input file ranges:
-  0h - 3h		(C:\Users\Ollie\AppData\Local\Temp\xcAs9p8.\driver_tmp_3.o)
-  8h - 187h		(C:\Users\Ollie\AppData\Local\Temp\xcAs9p8.\driver_tmp_3.o)
-  1000Eh - 10017h		(C:\Users\Ollie\AppData\Local\Temp\xcAs9p8.\driver_tmp_3.o)
+  0h - 3h		(C:\Users\Ollie\AppData\Local\Temp\xcAsp5s.\driver_tmp_3.o)
+  8h - 1CFh		(C:\Users\Ollie\AppData\Local\Temp\xcAsp5s.\driver_tmp_3.o)
+  1000Eh - 10017h		(C:\Users\Ollie\AppData\Local\Temp\xcAsp5s.\driver_tmp_3.o)
  Unused ranges:
   4h - 7h
-  188h - 1000Dh
+  1D0h - 1000Dh
 
 ### Hex Memory Map ###
  Legend:
   -- = Unused memory
-  H1 = Input file             (C:\Users\Ollie\AppData\Local\Temp\xcAs9p8.\driver_tmp_3.o)
+  H1 = Input file             (C:\Users\Ollie\AppData\Local\Temp\xcAsp5s.\driver_tmp_3.o)
 ----------------------------------------------------------
          | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
 ----------------------------------------------------------
@@ -46,7 +46,11 @@
 00000150 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00000160 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 00000170 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
-00000180 | H1 H1 H1 H1 H1 H1 H1 H1 -- -- -- -- -- -- -- --
+00000180 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+00000190 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+000001A0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+000001B0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
+000001C0 | H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1 H1
 ----------------------------------------------------------
 00010000 | -- -- -- -- -- -- -- -- -- -- -- -- -- -- H1 H1
 00010010 | H1 H1 H1 H1 H1 H1 H1 H1 -- -- -- -- -- -- -- --
