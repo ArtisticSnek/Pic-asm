@@ -8,8 +8,23 @@ with open("hdspCode.hdsp", "r") as f:
 
 output = []
 
+class program:
+    def __init__(self):
+        self.preCode = []
+        self.postCode = []
+        self.udc = {}
+        self.images = []
+
+script = program()
+
+def createCustomCharacter(name, index, file, scriptObj):
+    scriptObj.udc[name] = index
+    scriptObj.append(file)
+    
+
 customCharacters = {}
 for command in lines:
-    if command[0] == "defChar": #defChar name file
-        characterID = len(customCharacters)
-        customCharacters[name] = characterID
+    if command[0] == "defChar": #defChar name index file
+        createCustomCharacter(command[1], command[2], command[3], script)
+        
+        

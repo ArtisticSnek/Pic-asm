@@ -92,7 +92,12 @@ main:
 	clrf udcTableIndex
 	numberOfudc equ 28h
 	clrf numberOfudc
-	
+	flashRegister equ 29h
+	clrf flashRegister	;bit 7 - flash on or off, bits 0-2 - character code
+	wregShadow equ 30h
+	clrf wregShadow
+	counter equ 31h
+	clrf counter
 	
     setPins:
 	movlb 00h ;select bank 0
@@ -109,7 +114,7 @@ main:
 	clrf TRISA; RA0-4 Data, RA5 - FL
 	bsf LATA, 3
 	bsf LATA, 4
-	bsf LATA, 5 ;Disable read
+	bsf LATA, 5
 	
 	clrf PORTC
 	clrf TRISC; RC0 - RST, RC1 - Read enable
@@ -133,9 +138,11 @@ main:
 	
     setTimer:
 	movlb 0Bh
-	bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
+	movlw 80h
+	movwf T0CON0
+	;bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
 
-	movlw 74h
+	movlw 84h
 	movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
 	
 	movlb 04h
@@ -150,22 +157,26 @@ main:
 movlb 00h
 bcf LATC, 0 ;reset display
 bsf LATC, 0
+
+movlw 80h
+movwf flashRegister
 	
 ;paste generated code here
 movlb 00h
-movlw 6h
+movlw 7h
 movwf stringLength
 movlw 4h
 movwf numberOfudc
-movlw 0b00000000
+movlw 0b00001000
 movwf controlRegister
 call setControlRegister
 call defineCustomCharacters
 ;end of generated code
 	
 	
-movlb 00h
-call writeString
+
+
+;call updateFlash
 
 AppLoop:
     movlb 0Eh ;move to the bank with timer interupt flag
@@ -173,7 +184,12 @@ AppLoop:
 	btfss PIR0, 5; timer0 interupt flag - if set, then has overflowed
 	goto timerWait	
     movlb 0Eh	
-    bcf PIR0, 5   
+    bcf PIR0, 5 
+    
+    movlb 00h
+    call writeString
+    incf counter
+    
     goto AppLoop
     
 writeBlock:
@@ -185,6 +201,29 @@ writeBlock:
     bsf LATE, 0 ;disable write
     call fastDelay
     return
+
+updateFlash: 
+    movlb 00h
+    clrf LATA
+    bcf LATA, 5
+    movf flashRegister, w
+    bcf WREG, 7
+    addwf LATA, f
+ 
+    
+    clrf LATD
+    btfsc flashRegister, 7
+    bsf LATD, 0
+    
+    bcf LATE, 1 ;enable chip
+    call fastDelay
+    
+    call writeBlock
+    
+    bsf LATE, 1
+    call fastDelay
+    return
+    
     
 writeCustomCharacter:
     movlb 00h
@@ -263,6 +302,7 @@ writeString:
     writingToDisplay:
 	movf stringIndex, w ;string index references character code in table
 	call string ;will set w to the character code
+	movlb 00h
 	movwf character ;move this to the character register - will be read by setCharacter
 	call setCharacter
 	
@@ -331,14 +371,36 @@ defineCustomCharacters:
 
 ;start of generated code
 string:
-	brw
-	retlw 80h
-	retlw 81h
-	retlw 82h
-	retlw 83h
-	retlw 84h
-	retlw 74h
-	retlw 72h
+    movlb 00h
+    movwf wregShadow
+    lslf WREG
+    addwf wregShadow, w
+    movlb 00h
+    brw
+    btfss counter, 0
+    retlw 30h
+    retlw 31h
+    btfss counter, 1
+    retlw 30h
+    retlw 31h
+    btfss counter, 2
+    retlw 30h
+    retlw 31h
+    btfss counter, 3
+    retlw 30h
+    retlw 31h
+    btfss counter, 4
+    retlw 30h
+    retlw 31h
+    btfss counter, 5
+    retlw 30h
+    retlw 31h
+    btfss counter, 6
+    retlw 30h
+    retlw 31h
+    btfss counter, 7
+    retlw 30h
+    retlw 31h
 customCharacter0:
 	movlb 00h
 	movf udcTableIndex, w
