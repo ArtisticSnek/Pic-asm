@@ -7877,6 +7877,7 @@ AppLoop:
     bcf PIR0, 5
 
     movlb 00h
+    movlw 00h
     call writeString
     incf counter
 
@@ -7989,8 +7990,10 @@ setControlRegister:
 
 writeString: ;wreg will determine what string is written
     movlb 00h
+    movwf wregShadow
     writingToDisplay:
- movlw 00h
+ movlb 00h
+ movf wregShadow, w
  call stringTable ;wreg decides what string, stringIndex determines what character of that string
  movlb 00h
  movwf character ;move this to the character register - will be read by setCharacter
@@ -8062,9 +8065,8 @@ defineCustomCharacters:
 stringRegister:
     movlb 00h
     movf stringIndex, w
-    movwf wregShadow
     lslf WREG
-    addwf wregShadow, w
+    addwf stringIndex, w
     movlb 00h
     brw
     btfss INDF0, 0
@@ -8105,11 +8107,11 @@ string:
     movlb 00h
     movf stringIndex, w
     brw
-    retlw 00h
-    retlw 00h
-    retlw 00h
-    retlw 00h
-    retlw 00h
+    retlw 80h
+    retlw 81h
+    retlw 82h
+    retlw 83h
+    retlw 84h
     retlw 00h
     retlw 00h
     retlw 00h
