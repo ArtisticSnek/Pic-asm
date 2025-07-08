@@ -7726,28 +7726,15 @@ PSECT Isr_Vec,global,class=CODE,delta=2
 global IsrHandler
 IsrHandler:
     movlb 3Eh
-    btfsc IOCBF,5 ;skips when the button has not been pressed
-    goto clockSpeedChange
-    pastClockSpeedChange:
-
+    ;handle interrupts
     goto IsrExit
-
-    clockSpeedChange:
- bcf IOCBF, 5 ;reset interrupt that caused this
- movlb 0Bh
- btfss T0CON1, 7 ; if the timer is slow now, don't set it slow again
- movlw 85h;10000011B
- btfsc T0CON1, 7; if the timer is fast now, don't set it fast again
- movlw 74h;10000111B
- movwf T0CON1 ;set up Timer0 as LFINTOC, with new speed
- goto pastClockSpeedChange
 IsrExit:
     retfie ; Return from interrupt
 
 ;
 ; Power-On-Reset entry point
 ;
-PSECT Por_Vec,global,class=CODE,delta=2;, reloc = 0
+PSECT Por_Vec,global,class=CODE,delta=2
 global resetVec
 resetVec:
     pagesel Start
@@ -7772,321 +7759,442 @@ Start:
 PSECT udata;,global,class=RAM,space=1,delta=2;,noexec
 
 PSECT MainCode,global,class=CODE,delta=2
-
-ledMatrixToggleColumn:
-    addwf PCL, f
-    goto toggleColumnOne
-    goto toggleColumnTwo
-    goto toggleColumnThree
-    goto toggleColumnFour
-    goto toggleColumnFive
-    goto toggleColumnSix
-    goto toggleColumnSeven
-    goto toggleColumnEight
-    toggleColumnOne:
- movlw 10h
- xorwf LATB, f
- return
-    toggleColumnTwo:
- movlw 10h
- xorwf LATC, f
- return
-    toggleColumnThree:
- movlw 08h
- xorwf LATC, f
- return
-    toggleColumnFour:
- movlw 02h
- xorwf LATB, f
- return
-    toggleColumnFive:
- movlw 20h
- xorwf LATC, f
- return
-    toggleColumnSix:
- movlw 04h
- xorwf LATB, f
- return
-    toggleColumnSeven:
- movlw 02h
- xorwf LATE, f
- return
-    toggleColumnEight:
- movlw 01h
- xorwf LATA, f
- return
-
-ledMatrixToggleRow:
-    movlb 00h
-    addwf PCL, f
-    goto toggleRowOne
-    goto toggleRowTwo
-    goto toggleRowThree
-    goto toggleRowFour
-    goto toggleRowFive
-    goto toggleRowSix
-    goto toggleRowSeven
-    goto toggleRowEight
-    toggleRowOne:
- movlw 01h
- xorwf LATB, f
- return
-    toggleRowTwo:
- movlw 01h
- xorwf LATE, f
- return
-    toggleRowThree:
- movlw 80h
- xorwf LATC, f
- return
-    toggleRowFour:
- movlw 08h
- xorwf LATB, f
- return
-    toggleRowFive:
- movlw 01h
- xorwf LATC, f
- return
-    toggleRowSix:
- movlw 40h
- xorwf LATC, f
- return
-    toggleRowSeven:
- movlw 02h
- xorwf LATC, f
- return
-    toggleRowEight:
- movlw 04h
- xorwf LATC, f
- return
-togglePixel:
-    movlb 00h
-    andwf pixelX, f
-    andwf pixelY, f
-    movf pixelX, w
-    lsrf WREG, w
-    lsrf WREG, w
-    lsrf WREG, w
-    lsrf WREG, w
-    call ledMatrixToggleColumn
-    movf pixelY, w
-    call ledMatrixToggleRow
-    movlw 0F0h
-    movwf pixelX
-    movlw 00Fh
-    movwf pixelY
-    return
-
-
-ledMatrixPins:
-    clrf TRISB
-    clrf TRISC
-    clrf TRISE
-    clrf TRISA
-    clrf LATA
-    clrf LATB
-    clrf LATC
-    clrf LATE
-    return
-
-imagePixelMap:
-brw
-retlw 01h
-retlw 02h
-retlw 05h
-retlw 06h
-retlw 10h
-retlw 11h
-retlw 12h
-retlw 13h
-retlw 14h
-retlw 15h
-retlw 16h
-retlw 17h
-retlw 20h
-retlw 21h
-retlw 22h
-retlw 23h
-retlw 24h
-retlw 25h
-retlw 26h
-retlw 27h
-retlw 30h
-retlw 31h
-retlw 32h
-retlw 33h
-retlw 34h
-retlw 35h
-retlw 36h
-retlw 37h
-retlw 41h
-retlw 42h
-retlw 43h
-retlw 44h
-retlw 45h
-retlw 46h
-retlw 52h
-retlw 53h
-retlw 54h
-retlw 55h
-retlw 63h
-retlw 64h
-retlw 0FFh
-
-
-
-
 main:
     setVariables:
  movlb 00h
- movlw 00h
- columnCounter equ 20h
- rowCounter equ 21h
- movwf columnCounter
- movwf rowCounter
- pixelX equ 22h
- pixelY equ 23h
- movlw 0F0h
- movwf pixelX
- movlw 00Fh
- movwf pixelY
-
- pixelCounter equ 24h
- clrf pixelCounter
- prevPixel equ 25h
- clrf prevPixel
+ displayIndex equ 20h
+ clrf displayIndex
+ stringIndex equ 21h
+ clrf stringIndex
+ stringLength equ 22h
+ clrf stringLength
+ character equ 23h
+ clrf character
+ controlRegister equ 24h
+ clrf controlRegister
+ udcNumber equ 26h ;the custom character number
+ clrf udcNumber
+ udcTableIndex equ 27h ;index in the table currently being read from
+ clrf udcTableIndex
+ numberOfudc equ 28h
+ clrf numberOfudc
+ flashRegister equ 29h
+ clrf flashRegister ;bit 7 - flash on or off, bits 0-2 - character code
+ wregShadow equ 30h
+ clrf wregShadow
+ counter equ 31h
+ clrf counter
 
     setPins:
  movlb 00h ;select bank 0
- call ledMatrixPins
+
+ clrf PORTD ;All of pins D are used for data
+ clrf TRISD ;set as outputs
+
  clrf PORTE
- bcf TRISE, 2 ;set ((PORTE) and 07Fh), 2 as output - board led
+ clrf TRISE ; ((PORTE) and 07Fh), 0 - Write enable, ((PORTE) and 07Fh), 1 - Chip enable, ((PORTE) and 07Fh), 2 - clock/ board LED
+ bsf LATE, 0
+ bsf LATE, 1
+
+ clrf PORTA
+ clrf TRISA; ((PORTA) and 07Fh), 0 -4 Data, ((PORTA) and 07Fh), 5 - FL
+ bsf LATA, 3
+ bsf LATA, 4
+ bsf LATA, 5
+
+ clrf PORTC
+ clrf TRISC; ((PORTC) and 07Fh), 0 - RST, ((PORTC) and 07Fh), 1 - Read enable
+ bsf LATC, 0
+ bsf LATC, 1
 
  clrf PORTB ;reset Port B
- clrf TRISB
  bsf TRISB, 5 ;set ((PORTB) and 07Fh), 5 as input - board button
 
  movlb 3Eh
  clrf ANSELB ;turn off analog for port B
  bsf WPUB, 5 ;Set weak pull up for ((PORTB) and 07Fh), 5
 
+ clrf ANSELA
+ clrf ANSELB
+ clrf ANSELC
+ clrf ANSELD
+
     setInterrputs:
- movlb 3Eh
- bsf IOCBP, 5 ;enable detect for positive edge
- bsf IOCBN, 5 ;enable detect for negative edge
- bcf IOCBF, 5 ;clear interrupt flag
 
- bsf INTCON, 7 ;enable global interrupts
-
- movlb 0Eh
- bsf PIE0, 4 ;enable interrupt on change
 
     setTimer:
  movlb 0Bh
- bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
+ movlw 80h
+ movwf T0CON0
+ ;bsf T0CON0, 7 ;set up Timer0 Enabled, 8 bit, 1:1 postscalar
 
- movlw 74h
+ movlw 84h
  movwf T0CON1 ;set up Timer0 as LFINTOC, Synced, 1:8 prescalar
+
+ movlb 04h
+
+ movlw 00h ;set up Timer1 as 1:1 prescaleer, synced, and disabled
+ movwf T1CON
+ movlw 07h ;set Timer1 as MFINTOSC 32khz
+ movwf T1CLK
 
 ; Application process loop
 ;
-call toggleAllRow
-call imagePixelMap
-call togglePixel
+movlb 00h
+bcf LATC, 0 ;reset display
+bsf LATC, 0
+
+movlw 80h
+movwf flashRegister
+
+;paste generated code here
+movlb 00h
+movlw 7h
+movwf stringLength
+movlw 4h
+movwf numberOfudc
+movlw 0b00001000
+movwf controlRegister
+call setControlRegister
+call defineCustomCharacters
+;end of generated code
+
+
+
+
+;call updateFlash
+
 AppLoop:
     movlb 0Eh ;move to the bank with timer interupt flag
-
     timerWait:
  btfss PIR0, 5; timer0 interupt flag - if set, then has overflowed
  goto timerWait
-
     movlb 0Eh
     bcf PIR0, 5
 
     movlb 00h
-    movf prevPixel, w
-    call imagePixelMap
-    call togglePixel
-
-    movf pixelCounter, w
-    call imagePixelMap
-    btfsc WREG, 7 ;pixels end with a FFh, so when this is reached, clear
-    goto resetPixelCounter
-    call togglePixel
-    movf pixelCounter, w
-    movwf prevPixel
-    incf pixelCounter
-    pastPixelReset:
-
-    movlb 00h
-    btfss LATE, 2 ;if led is off, skip step to turn it off
-    goto ledOff
-
-    btfsc LATE, 2 ;if led is on, skip step to turn it on
-    goto ledOn
+    call writeString
+    incf counter
 
     goto AppLoop
-    resetPixelCounter:
+
+writeBlock:
+    movlb 00h
+    bcf LATE, 0 ;enable write
+    call fastDelay
+
+    movlb 00h
+    bsf LATE, 0 ;disable write
+    call fastDelay
+    return
+
+updateFlash:
+    movlb 00h
+    clrf LATA
+    bcf LATA, 5
+    movf flashRegister, w
+    bcf WREG, 7
+    addwf LATA, f
+
+
+    clrf LATD
+    btfsc flashRegister, 7
+    bsf LATD, 0
+
+    bcf LATE, 1 ;enable chip
+    call fastDelay
+
+    call writeBlock
+
+    bsf LATE, 1
+    call fastDelay
+    return
+
+
+writeCustomCharacter:
+    movlb 00h
+
+    movlw 20h
+    addwf udcNumber, w
+    movwf LATA ;FL high, rest are low - write to UDC, besides the character in which to write
+
+    clrf udcTableIndex ;point to attribute 0 of table
+    movf udcNumber, w
+    call udcTable ;get atribute #0 - UDC address. Table of all UDC -> table specific to one UDC -> data
+    movwf LATD ;move this address to port D
+    call fastDelay
+
+    movlb 00h
+    bcf LATE, 1 ;enable chip
+    call fastDelay
+
+    ;Write cycle 1 only sends the UDC address
+    call writeBlock
+
+    movlb 00h
+    movlw 28h ;00101000
+    movwf LATA ;set A register to the correct value to start writing data
+    ;next 7 write cycles are sending each row of the character
+    ;register udcTableIndex will be used to keep track of what rows have been sent, by knowing what rows of the table have been read
+    sendingCharacterRows:
  movlb 00h
- clrf pixelCounter
- clrf prevPixel
+ incf udcTableIndex
+
+ movf udcNumber, w
+ call udcTable ;wreg now contains the row of pixels to send
+
+ movlb 00h
+ movwf LATD
+ call fastDelay
+
+ call writeBlock
+
+ movlb 00h
+ incf LATA
+ movlw 07h
+ subwf udcTableIndex, w ;Compare current index to 7 (number of rows)
+ btfss STATUS, 2;check if zero - if so, sending is completed
+ goto sendingCharacterRows
+    clrf udcTableIndex
+    bsf LATE, 1 ;disable chip
+    call fastDelay
+    return
+
+setControlRegister:
+    movlb 00h
+    movlw 30h
+    movwf LATA
+    call fastDelay
+
+    movlb 00h
+    bcf LATE, 1 ;enable chip
+    call fastDelay
+
+    movlb 00h
+    movf controlRegister, w
+    movwf LATD ;send command
+    call fastDelay
+
+    call writeBlock
+
+    movlb 00h
+    clrf LATD ;clear data
+    bsf LATE, 1 ;disable chip enable
+    call fastDelay
+    return
+
+writeString:
+    movlb 00h
+    writingToDisplay:
  movlw 00h
- call imagePixelMap
- call togglePixel
- incf pixelCounter
- goto pastPixelReset
-    ledOn:
+ movwf FSR0H
+ movlw counter
+ movwf FSR0L
+ movf stringIndex, w ;string index references character code in table
+ call stringRegister ;will set w to the character code
  movlb 00h
- bcf LATE, 2
- movlb 0Eh ;move to the bank with timer interupt flag
- goto AppLoop
-    ledOff:
- movlb 00h
- bsf LATE, 2
- movlb 0Eh ;move to the bank with timer interupt flag
- goto AppLoop
+ movwf character ;move this to the character register - will be read by setCharacter
+ call setCharacter
 
-    toggleAllColumn:
  movlb 00h
- clrf columnCounter ;reset counter
- toggleAllColumnLoop: ;iterate through each column, toggling it as you go
-     movf columnCounter, w
-     call ledMatrixToggleColumn
+ movf stringIndex, w
+ subwf stringLength, w ;Compare current index to length of string
+ btfsc STATUS, 2;check if zero - if so, string is completed
+ goto doneWritingToDisplay
+ incf stringIndex ;if not done, increment display index and string index
+ incf displayIndex
+ goto writingToDisplay ;loop back
+    doneWritingToDisplay:
+    movlb 00h
+    clrf displayIndex ;reset these registers
+    clrf stringIndex
+    return
 
-     movlb 00h
-     incf columnCounter
-     movf columnCounter, w
-     sublw 08h
-     btfss STATUS, 2
-     goto toggleAllColumnLoop
- clrf columnCounter
+setCharacter:
+    movlb 00h
+    movlw 78h ;set up A register to write a default character
+    addwf displayIndex, w ;add the display index - such that the other parts of the A register remain untouched
+    movwf LATA
+    call fastDelay
+
+    movlb 00h
+    bcf LATE, 1 ;enable chip
+    call fastDelay
+
+    movlb 00h
+    movf character, w
+    movwf LATD ;send character
+    call fastDelay
+
+    call writeBlock
+
+    movlb 00h
+    clrf LATD ;clear data
+    bsf LATE, 1 ;disable chip enable
+    call fastDelay
+
+    return
+
+fastDelay:
+    movlb 04h
+    bsf T1CON, 0 ;enable timer
+    waitForFastTimer:
+ btfss TMR1L, 4 ;in theory, could look at bit 4 to get ~280us clock
+ goto waitForFastTimer
+    bcf T1CON, 0
+    clrf TMR1H
+    clrf TMR1L
+    return
+
+defineCustomCharacters:
+    movlb 00h
+    clrf udcNumber
+    defineCustomCharacterLoop:
+ call writeCustomCharacter
+ movlb 00h
+ movf udcNumber, w
+ subwf numberOfudc, w
+ btfsc STATUS, 2;check if zero - if so, sending is completed
  return
+ incf udcNumber
+ goto defineCustomCharacterLoop
 
-    toggleAllRow:
+stringRegister:
+    movlb 00h
+    movwf wregShadow
+    lslf WREG
+    addwf wregShadow, w
+    movlb 00h
+    brw
+    btfss INDF0, 0
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 1
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 2
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 3
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 4
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 5
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 6
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 7
+    retlw 30h
+    retlw 31h
+
+;start of generated code
+string:
+    movlb 00h
+    movwf wregShadow
+    lslf WREG
+    addwf wregShadow, w
+    movlb 00h
+    brw
+    btfss counter, 0
+    retlw 30h
+    retlw 31h
+    btfss counter, 1
+    retlw 30h
+    retlw 31h
+    btfss counter, 2
+    retlw 30h
+    retlw 31h
+    btfss counter, 3
+    retlw 30h
+    retlw 31h
+    btfss counter, 4
+    retlw 30h
+    retlw 31h
+    btfss counter, 5
+    retlw 30h
+    retlw 31h
+    btfss counter, 6
+    retlw 30h
+    retlw 31h
+    btfss counter, 7
+    retlw 30h
+    retlw 31h
+customCharacter0:
  movlb 00h
- clrf rowCounter
- toggleAllRowLoop:
-     movf rowCounter, w
-     call ledMatrixToggleRow
-
-     movlb 00h
-     incf rowCounter
-     movf rowCounter, w
-     sublw 08h
-     btfss STATUS, 2
-     goto toggleAllRowLoop
- clrf rowCounter
- return
-    toggleAllLeds:
+ movf udcTableIndex, w
+ brw
+ retlw 0h
+ retlw 0b10111
+ retlw 0b10101
+ retlw 0b11101
+ retlw 0b00001
+ retlw 0b11111
+ retlw 0b10000
+ retlw 0b11111
+customCharacter1:
  movlb 00h
- movlw 0FFh
- xorwf LATC, f
- movlw 0Fh
- xorwf LATB, f
- movlw 03h
- xorwf LATE, f
- movlw 01h
- xorwf LATA, f
+ movf udcTableIndex, w
+ brw
+ retlw 01h
+ retlw 0b00000
+ retlw 0b01110
+ retlw 0b10011
+ retlw 0b10011
+ retlw 0b10011
+ retlw 0b01110
+ retlw 0b01010
+customCharacter2:
+ movlb 00h
+ movf udcTableIndex, w
+ brw
+ retlw 02h
+ retlw 0b01110
+ retlw 0b01110
+ retlw 0b01110
+ retlw 0b10101
+ retlw 0b00100
+ retlw 0b01010
+ retlw 0b10001
+customCharacter3:
+ movlb 00h
+ movf udcTableIndex, w
+ brw
+ retlw 03h
+ retlw 0b11111
+ retlw 0b11111
+ retlw 0b11111
+ retlw 0b11111
+ retlw 0b11111
+ retlw 0b11111
+ retlw 0b11111
+customCharacter4:
+ movlb 00h
+ movf udcTableIndex, w
+ brw
+ retlw 04h
+ retlw 0b00000
+ retlw 0b00100
+ retlw 0b01100
+ retlw 0b00100
+ retlw 0b00110
+ retlw 0b00010
+ retlw 0b00000
+udcTable:
+ lslf WREG
+ brw
+ call customCharacter0
  return
-
+ call customCharacter1
+ return
+ call customCharacter2
+ return
+ call customCharacter3
+ return
+ call customCharacter4
+ return
+;end of generated code
     END resetVec

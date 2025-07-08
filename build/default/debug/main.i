@@ -7986,8 +7986,12 @@ setControlRegister:
 writeString:
     movlb 00h
     writingToDisplay:
+ movlw 00h
+ movwf FSR0H
+ movlw counter
+ movwf FSR0L
  movf stringIndex, w ;string index references character code in table
- call string ;will set w to the character code
+ call stringRegister ;will set w to the character code
  movlb 00h
  movwf character ;move this to the character register - will be read by setCharacter
  call setCharacter
@@ -8054,6 +8058,38 @@ defineCustomCharacters:
  return
  incf udcNumber
  goto defineCustomCharacterLoop
+
+stringRegister:
+    movlb 00h
+    movwf wregShadow
+    lslf WREG
+    addwf wregShadow, w
+    movlb 00h
+    brw
+    btfss INDF0, 0
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 1
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 2
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 3
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 4
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 5
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 6
+    retlw 30h
+    retlw 31h
+    btfss INDF0, 7
+    retlw 30h
+    retlw 31h
 
 ;start of generated code
 string:

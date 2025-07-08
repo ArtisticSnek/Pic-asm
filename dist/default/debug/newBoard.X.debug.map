@@ -6,7 +6,7 @@ Linker command line:
   --edf=C:/Program Files/Microchip/MPLABX/v6.25/packs/Microchip/PIC16F1xxxx_DFP/1.26.410/xc8\pic\dat\20250122140635_en.msgs \
   -cs -h+dist/default/debug\newBoard.X.debug.sym \
   --cmf=dist/default/debug\newBoard.X.debug.cmf -z -Q16F15276 \
-  -oC:\Users\Ollie\AppData\Local\Temp\xcAshkk.\driver_tmp_3.o \
+  -oC:\Users\Oliver\AppData\Local\Temp\xcAspp4.\driver_tmp_3.o \
   -PIsr_Vec=0004h -PPor_Vec=0000h --fixupoverflow=error \
   -ver=XC8 PIC(R) Assembler --fixupoverflow=lstwarn \
   -Mdist/default/debug/newBoard.X.debug.map -E1 -ACODE=00h-07FFhx8 \
@@ -57,15 +57,15 @@ Machine type is 16F15276
                 Name                               Link     Load   Length Selector   Space Scale
 build/default/debug/main.o
                 config                             8007     8007        5        0       4
-                MainCode                              7        7      126        8       0
-                Start_Code                          12D      12D        7        8       0
+                MainCode                              7        7      148        8       0
+                Start_Code                          14F      14F        7        8       0
                 Por_Vec                               0        0        2        0       0
                 Isr_Vec                               4        4        3        8       0
 
 TOTAL           Name                               Link     Load   Length     Space
         CLASS   CODE           
-                MainCode                              7        7      126         0
-                Start_Code                          12D      12D        7         0
+                MainCode                              7        7      148         0
+                Start_Code                          14F      14F        7         0
                 Por_Vec                               0        0        2         0
                 Isr_Vec                               4        4        3         0
 
@@ -275,7 +275,7 @@ TOTAL           Name                               Link     Load   Length     Sp
 SEGMENTS        Name                           Load    Length   Top    Selector   Space  Class     Delta
 
                 Por_Vec                        000000  000002  000002         0       0  CODE        2
-                Isr_Vec                        000004  000130  000134         8       0  CODE        2
+                Isr_Vec                        000004  000152  000156         8       0  CODE        2
 
 
 UNUSED ADDRESS RANGES
@@ -309,12 +309,12 @@ UNUSED ADDRESS RANGES
         BANK9            004A0-004EF              50           1
         BIGRAM           02000-027EF             7F0           1
         CODE             00002-00003               2           2
-                         00134-03FFF             800
+                         00156-03FFF             800
         COMMON           00070-0007F              10           1
         CONST            00002-00003               2           2
-                         00134-03FFF             100
+                         00156-03FFF             100
         ENTRY            00002-00003               2           2
-                         00134-03FFF             100
+                         00156-03FFF             100
         IDLOC            08000-08003               4           2
         RAM              00020-0006F              50           1
                          000A0-000EF              50
@@ -383,7 +383,6 @@ UNUSED ADDRESS RANGES
         SFR47            01780-017EF              70           1
         SFR48            01800-0186F              70           1
         SFR49            01880-018EF              70           1
-        SFR5             00280-0029F              20           1
         SFR50            01900-0196F              70           1
         SFR51            01980-019EF              70           1
         SFR52            01A00-01A6F              70           1
@@ -403,9 +402,9 @@ UNUSED ADDRESS RANGES
         SFR8             00400-0041F              20           1
         SFR9             00480-0049F              20           1
         STRCODE          00002-00003               2           2
-                         00134-03FFF            3ECC
+                         00156-03FFF            3EAA
         STRING           00002-00003               2           2
-                         00134-03FFF             100
+                         00156-03FFF             100
 
                                   Symbol Table
 
@@ -413,7 +412,7 @@ IsrHandler      Isr_Vec      00004  __HIsr_Vec      Isr_Vec      00007
 __HMainCode     MainCode     00004  __HPor_Vec      Por_Vec      00002
 __HStart_Code   Start_Code   00004  __H__absolute__ __absolute__ 00000
 __Hcode         code         00004  __Hconfig       config       0800C
-__Hdata         data         00004  __Hspace_0      (abs)        00134
+__Hdata         data         00004  __Hspace_0      (abs)        00156
 __Hspace_1      (abs)        00000  __Hspace_4      (abs)        10013
 __Hudata        udata        00004  __Hudata_bank0  udata_bank0  00004
 __Hudata_bank1  udata_bank1  00004  __Hudata_bank10 udata_bank10 00004
@@ -448,5 +447,5 @@ __Ludata_bank25 udata_bank25 00004  __Ludata_bank3  udata_bank3  00004
 __Ludata_bank4  udata_bank4  00004  __Ludata_bank5  udata_bank5  00004
 __Ludata_bank6  udata_bank6  00004  __Ludata_bank7  udata_bank7  00004
 __Ludata_bank8  udata_bank8  00004  __Ludata_bank9  udata_bank9  00004
-__Ludata_shr    udata_shr    00004  __S0            (abs)        00134
+__Ludata_shr    udata_shr    00004  __S0            (abs)        00156
 __S1            (abs)        00000  resetVec        Por_Vec      00000

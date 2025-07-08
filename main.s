@@ -297,11 +297,12 @@ setControlRegister:
     call fastDelay
     return
     
-writeString:
+writeString: ;wreg will determine what string is written
     movlb 00h
     writingToDisplay:
-	movf stringIndex, w ;string index references character code in table
-	call string ;will set w to the character code
+	movlw 00h
+	call stringTable ;wreg decides what string, stringIndex determines what character of that string
+	call stringRegister ;will set w to the character code
 	movlb 00h
 	movwf character ;move this to the character register - will be read by setCharacter
 	call setCharacter
@@ -368,39 +369,62 @@ defineCustomCharacters:
 	return
 	incf udcNumber
 	goto defineCustomCharacterLoop
-
-;start of generated code
-string:
+	
+stringRegister:
     movlb 00h
+    movf stringIndex, w
     movwf wregShadow
     lslf WREG
     addwf wregShadow, w
     movlb 00h
     brw
-    btfss counter, 0
+    btfss INDF0, 0
     retlw 30h
     retlw 31h
-    btfss counter, 1
+    btfss INDF0, 1
     retlw 30h
     retlw 31h
-    btfss counter, 2
+    btfss INDF0, 2
     retlw 30h
     retlw 31h
-    btfss counter, 3
+    btfss INDF0, 3
     retlw 30h
     retlw 31h
-    btfss counter, 4
+    btfss INDF0, 4
     retlw 30h
     retlw 31h
-    btfss counter, 5
+    btfss INDF0, 5
     retlw 30h
     retlw 31h
-    btfss counter, 6
+    btfss INDF0, 6
     retlw 30h
     retlw 31h
-    btfss counter, 7
+    btfss INDF0, 7
     retlw 30h
     retlw 31h
+
+;start of generated code
+stringTable:
+    lslf WREG
+    brw
+    call stringRegister
+    return
+    call string
+    return
+    
+string:
+    movlb 00h
+    movf stringIndex, w
+    brw
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    
 customCharacter0:
 	movlb 00h
 	movf udcTableIndex, w
