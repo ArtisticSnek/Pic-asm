@@ -2,7 +2,7 @@
 movlb 00h
 movlw 6h
 movwf stringLength
-movlw 1
+movlw 4h
 movwf numberOfudc
 movlw 0b00000000
 movwf controlRegister
@@ -42,10 +42,52 @@ customCharacter1:
 	retlw 0b10011
 	retlw 0b01110
 	retlw 0b01010
+customCharacter2:
+	movlb 00h
+	movf udcTableIndex, w
+	brw
+	retlw 02h
+	retlw 0b01110
+	retlw 0b01110
+	retlw 0b01110
+	retlw 0b10101
+	retlw 0b00100
+	retlw 0b01010
+	retlw 0b10001
+customCharacter3:
+	movlb 00h
+	movf udcTableIndex, w
+	brw
+	retlw 03h
+	retlw 0b11111
+	retlw 0b11111
+	retlw 0b11111
+	retlw 0b11111
+	retlw 0b11111
+	retlw 0b11111
+	retlw 0b11111
+customCharacter4:
+	movlb 00h
+	movf udcTableIndex, w
+	brw
+	retlw 04h
+	retlw 0b00000
+	retlw 0b00100
+	retlw 0b01100
+	retlw 0b00100
+	retlw 0b00110
+	retlw 0b00010
+	retlw 0b00000
 udcTable:
 	lslf WREG
 	brw
 	call customCharacter0
 	return
 	call customCharacter1
+	return
+	call customCharacter2
+	return
+	call customCharacter3
+	return
+	call customCharacter4
 	return

@@ -1,8 +1,8 @@
 import translatedCharacters as hdsp
 
 string = "TestStr"
-ctrlWord = "0b00000000"
-images = ["squiggle.png", "amogus.png"]
+ctrlWord = "0b00000000" # 7-clear flash/6-unused/5-self test result/4-blinking enable/3-flash enable/2-0 brightness x3
+images = ["squiggle.png", "amogus.png", "stickFig.png", "ff.png", "1.png"]
 
 preCode = [";Code to place before main loop\n",
           "movlb 00h\n",

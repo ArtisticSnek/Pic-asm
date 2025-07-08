@@ -7837,17 +7837,21 @@ movlb 00h
 bcf LATC, 0 ;reset display
 bsf LATC, 0
 
+;paste generated code here
 movlb 00h
-movlw 3h
+movlw 6h
 movwf stringLength
-movlw 03h
+movlw 4h
 movwf numberOfudc
-
-movlw 00h ; 7-clear flash/6-unused/5-self test result/4-blinking enable/3-flash enable/2-0 brightness x3
+movlw 0b00000000
 movwf controlRegister
 call setControlRegister
-
 call defineCustomCharacters
+;end of generated code
+
+
+movlb 00h
+call writeString
 
 AppLoop:
     movlb 0Eh ;move to the bank with timer interupt flag
@@ -7856,11 +7860,6 @@ AppLoop:
  goto timerWait
     movlb 0Eh
     bcf PIR0, 5
-
-    movlb 00h
-    call writeString
-
-
     goto AppLoop
 
 writeBlock:
@@ -8013,83 +8012,94 @@ defineCustomCharacters:
  call writeCustomCharacter
  movlb 00h
  movf udcNumber, w
- subwf numberOfudc
+ subwf numberOfudc, w
  btfsc STATUS, 2;check if zero - if so, sending is completed
  return
  incf udcNumber
  goto defineCustomCharacterLoop
 
-
+;start of generated code
 string:
-brw
-retlw 80h
-retlw 81h
-retlw 82h
-retlw 83h
-
-
-udcTable:
-    lslf WREG
-    brw
-    call customCharacter0
-    return
-    call customCharacter1
-    return
-    call customCharacter2
-    return
-    call customCharacter3
-    return
-
-customCharacter0: ;table defining characteristics of a custom character
-    movlb 00h
-    movf udcTableIndex, w
-    brw
-    retlw 00h ; UDC character address
-    retlw 01h ; Row 0
-    retlw 02h
-    retlw 03h
-    retlw 04h
-    retlw 05h
-    retlw 06h
-    retlw 07h ; Row 7
-
-customCharacter1: ;table defining characteristics of a custom character
-    movlb 00h
-    movf udcTableIndex, w
-    brw
-    retlw 01h ; UDC character address
-    retlw 1Fh ; Row 0
-    retlw 11h
-    retlw 11h
-    retlw 11h
-    retlw 11h
-    retlw 11h
-    retlw 1Fh ; Row 7
-
+ brw
+ retlw 80h
+ retlw 81h
+ retlw 82h
+ retlw 83h
+ retlw 84h
+ retlw 74h
+ retlw 72h
+customCharacter0:
+ movlb 00h
+ movf udcTableIndex, w
+ brw
+ retlw 0h
+ retlw 0b10111
+ retlw 0b10101
+ retlw 0b11101
+ retlw 0b00001
+ retlw 0b11111
+ retlw 0b10000
+ retlw 0b11111
+customCharacter1:
+ movlb 00h
+ movf udcTableIndex, w
+ brw
+ retlw 01h
+ retlw 0b00000
+ retlw 0b01110
+ retlw 0b10011
+ retlw 0b10011
+ retlw 0b10011
+ retlw 0b01110
+ retlw 0b01010
 customCharacter2:
-movlb 00h
-movf udcTableIndex, w
-brw
-retlw 02h
-retlw 0b10111
-retlw 0b10101
-retlw 0b11101
-retlw 0b00001
-retlw 0b11111
-retlw 0b10000
-retlw 0b11111
-
+ movlb 00h
+ movf udcTableIndex, w
+ brw
+ retlw 02h
+ retlw 0b01110
+ retlw 0b01110
+ retlw 0b01110
+ retlw 0b10101
+ retlw 0b00100
+ retlw 0b01010
+ retlw 0b10001
 customCharacter3:
-movlb 00h
-movf udcTableIndex, w
-brw
-retlw 03h
-retlw 0b00000
-retlw 0b01110
-retlw 0b10011
-retlw 0b10011
-retlw 0b10011
-retlw 0b01110
-retlw 0b01010
-
+ movlb 00h
+ movf udcTableIndex, w
+ brw
+ retlw 03h
+ retlw 0b11111
+ retlw 0b11111
+ retlw 0b11111
+ retlw 0b11111
+ retlw 0b11111
+ retlw 0b11111
+ retlw 0b11111
+customCharacter4:
+ movlb 00h
+ movf udcTableIndex, w
+ brw
+ retlw 04h
+ retlw 0b00000
+ retlw 0b00100
+ retlw 0b01100
+ retlw 0b00100
+ retlw 0b00110
+ retlw 0b00010
+ retlw 0b00000
+udcTable:
+ lslf WREG
+ brw
+ call customCharacter0
+ return
+ call customCharacter1
+ return
+ call customCharacter2
+ return
+ call customCharacter3
+ return
+ call customCharacter4
+ return
+;end of generated code
     END resetVec
