@@ -7776,6 +7776,9 @@ main:
  clrf udcNumber
  udcTableIndex equ 27h ;index in the table currently being read from
  clrf udcTableIndex
+ numberOfudc equ 28h
+ clrf numberOfudc
+
 
     setPins:
  movlb 00h ;select bank 0
@@ -7835,23 +7838,16 @@ bcf LATC, 0 ;reset display
 bsf LATC, 0
 
 movlb 00h
-movlw 6h
+movlw 3h
 movwf stringLength
+movlw 03h
+movwf numberOfudc
 
 movlw 00h ; 7-clear flash/6-unused/5-self test result/4-blinking enable/3-flash enable/2-0 brightness x3
 movwf controlRegister
 call setControlRegister
 
-call writeCustomCharacter
-movlb 00h
-movlw 01h
-movwf udcNumber
-call writeCustomCharacter
-
-movlb 00h
-movlw 02h
-movwf udcNumber
-call writeCustomCharacter
+call defineCustomCharacters
 
 AppLoop:
     movlb 0Eh ;move to the bank with timer interupt flag
@@ -7922,7 +7918,7 @@ writeCustomCharacter:
  btfss STATUS, 2;check if zero - if so, sending is completed
  goto sendingCharacterRows
     clrf udcTableIndex
-    bsf LATE, 1 ;enable chip
+    bsf LATE, 1 ;disable chip
     call fastDelay
     return
 
@@ -8010,15 +8006,26 @@ fastDelay:
     clrf TMR1L
     return
 
+defineCustomCharacters:
+    movlb 00h
+    clrf udcNumber
+    defineCustomCharacterLoop:
+ call writeCustomCharacter
+ movlb 00h
+ movf udcNumber, w
+ subwf numberOfudc
+ btfsc STATUS, 2;check if zero - if so, sending is completed
+ return
+ incf udcNumber
+ goto defineCustomCharacterLoop
+
+
 string:
 brw
-retlw 0b10000000
-retlw 0b10000001
-retlw 0b10000010
-retlw 0b10000011
-retlw 0b1101001
-retlw 0b1101110
-retlw 0b1100111
+retlw 80h
+retlw 81h
+retlw 82h
+retlw 83h
 
 
 udcTable:
@@ -8029,6 +8036,8 @@ udcTable:
     call customCharacter1
     return
     call customCharacter2
+    return
+    call customCharacter3
     return
 
 customCharacter0: ;table defining characteristics of a custom character
@@ -8069,5 +8078,18 @@ retlw 0b00001
 retlw 0b11111
 retlw 0b10000
 retlw 0b11111
+
+customCharacter3:
+movlb 00h
+movf udcTableIndex, w
+brw
+retlw 03h
+retlw 0b00000
+retlw 0b01110
+retlw 0b10011
+retlw 0b10011
+retlw 0b10011
+retlw 0b01110
+retlw 0b01010
 
     END resetVec

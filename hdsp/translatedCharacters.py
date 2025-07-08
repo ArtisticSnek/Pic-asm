@@ -129,21 +129,21 @@ charToNum = {
 def charToBin(character):
     idChar = charToNum[character]
     return (bin(idChar))
-def createTable(string):
-    print("string:")
-    print("movlb 00h")
-    print(f"movlw {len(string)-1}h")
-    print("movwf stringLength")
-    print("brw")
+def createStringTable(string):
+    output = ["string:\n",
+              "\tbrw\n"]
     for i in string:
-        print(f"retlw {charToBin(i)}")
+        output.append(f"\tretlw {hex(charToNum[i]).lstrip('0x').upper()+'h'}\n")
+    if __name__ == "__main__":
+        print(i.rstrip("\n") for i in output)
+    return output
 
 from PIL import Image
 def createPixelMap(number, imageFile):
     pic = Image.open(imageFile)
     pixels = pic.load()
-    output = [f"customCharacter{number}:\nmovlb 00h\nmovf udcTableIndex, w\nbrw\nretlw 0{hex(number).lstrip('0x')+'h'}"]
-    output+=["retlw 0b" for i in range(0,7)]
+    output = [f"customCharacter{number}:\n\tmovlb 00h\n\tmovf udcTableIndex, w\n\tbrw\n\tretlw 0{hex(number).lstrip('0x').upper()+'h'}\n"]
+    output+=["\tretlw 0b" for i in range(0,7)]
     for y in range(0,7):
         for x in range(0,5):
             if pixels[x,y] == (0,0,0,255):
@@ -154,8 +154,10 @@ def createPixelMap(number, imageFile):
     with open("characterTable.asm", "w") as f:
         f.writelines(output)
         f.close()
-    for i in output:
-        print(i.rstrip("\n"))
+    if __name__ == "__main__":
+        for i in output:
+            print(i.rstrip("\n"))
+    return output
     
             
 
