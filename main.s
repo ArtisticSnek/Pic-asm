@@ -177,6 +177,10 @@ call defineCustomCharacters
 
 
 ;call updateFlash
+movlw 00h
+movwf FSR0H
+movlw 31h
+movwf FSR0L
 
 AppLoop:
     movlb 0Eh ;move to the bank with timer interupt flag
@@ -302,7 +306,6 @@ writeString: ;wreg will determine what string is written
     writingToDisplay:
 	movlw 00h
 	call stringTable ;wreg decides what string, stringIndex determines what character of that string
-	call stringRegister ;will set w to the character code
 	movlb 00h
 	movwf character ;move this to the character register - will be read by setCharacter
 	call setCharacter

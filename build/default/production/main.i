@@ -7863,6 +7863,10 @@ call defineCustomCharacters
 
 
 ;call updateFlash
+movlw 00h
+movwf FSR0H
+movlw 31h
+movwf FSR0L
 
 AppLoop:
     movlb 0Eh ;move to the bank with timer interupt flag
@@ -7983,15 +7987,11 @@ setControlRegister:
     call fastDelay
     return
 
-writeString:
+writeString: ;wreg will determine what string is written
     movlb 00h
     writingToDisplay:
  movlw 00h
- movwf FSR0H
- movlw counter
- movwf FSR0L
- movf stringIndex, w ;string index references character code in table
- call stringRegister ;will set w to the character code
+ call stringTable ;wreg decides what string, stringIndex determines what character of that string
  movlb 00h
  movwf character ;move this to the character register - will be read by setCharacter
  call setCharacter
@@ -8061,6 +8061,7 @@ defineCustomCharacters:
 
 stringRegister:
     movlb 00h
+    movf stringIndex, w
     movwf wregShadow
     lslf WREG
     addwf wregShadow, w
@@ -8092,37 +8093,27 @@ stringRegister:
     retlw 31h
 
 ;start of generated code
+stringTable:
+    lslf WREG
+    brw
+    call stringRegister
+    return
+    call string
+    return
+
 string:
     movlb 00h
-    movwf wregShadow
-    lslf WREG
-    addwf wregShadow, w
-    movlb 00h
+    movf stringIndex, w
     brw
-    btfss counter, 0
-    retlw 30h
-    retlw 31h
-    btfss counter, 1
-    retlw 30h
-    retlw 31h
-    btfss counter, 2
-    retlw 30h
-    retlw 31h
-    btfss counter, 3
-    retlw 30h
-    retlw 31h
-    btfss counter, 4
-    retlw 30h
-    retlw 31h
-    btfss counter, 5
-    retlw 30h
-    retlw 31h
-    btfss counter, 6
-    retlw 30h
-    retlw 31h
-    btfss counter, 7
-    retlw 30h
-    retlw 31h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+    retlw 00h
+
 customCharacter0:
  movlb 00h
  movf udcTableIndex, w
